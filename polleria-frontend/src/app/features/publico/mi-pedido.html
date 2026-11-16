@@ -1,0 +1,112 @@
+@if(error()){<p role="alert">{{error()}}</p>}
+@if(pedido();as p){
+<p class="eyebrow">De nuestra cocina a ti</p>
+<div class="tracking-heading">
+    <div>
+        <h1>{{recienCreado&&!mostrarSeguimiento()?'¡Pedido confirmado!':'Seguimiento de tu pedido'}}</h1>
+        <p>Pedido <strong>#{{p.id}}</strong> · {{p.fecha|date:'dd/MM/yyyy HH:mm'}}</p>
+    </div><button type="button" class="secondary" (click)="cargar()"
+        [disabled]="ocupado()">{{ocupado()?'Consultando…':'Actualizar estado'}}</button>
+</div>
+<div class="tracking-layout">
+    <div class="tracking-main">
+        @if(recienCreado&&!mostrarSeguimiento()){
+        <section class="tracking-panel confirmation" role="status">
+            <div class="confirmation-icon"><app-icono-cliente nombre="check" /></div>
+            <h2>Hemos recibido tu pedido correctamente.</h2>
+            <p>Consulta su estado cuando lo necesites.</p>
+            <div class="order-number"><span>Número de pedido</span><strong>#{{p.id}}</strong></div>
+            <div class="summary-row"><span>Estado del pedido</span><app-estado [valor]="p.estado" /></div>
+            <div class="summary-row"><span>Pago</span><app-estado [valor]="p.estadoPago" /></div>
+            <div class="order-total"><span>Total confirmado</span><strong>{{p.total|currency:'PEN':'S/
+                    ':'1.2-2'}}</strong></div>
+            <div class="actions"><button type="button" (click)="mostrarSeguimiento.set(true)">Ver seguimiento
+                    <app-icono-cliente nombre="flecha" /></button><a class="action secondary"
+                    routerLink="/catalogo">Seguir comprando</a></div>
+        </section>
+        }@else{
+        <section class="tracking-panel preparation-panel">
+            <div class="panel-heading">
+                <h2>Estado de preparación</h2><app-estado [valor]="p.estado" />
+            </div>
+            @if(p.flujoVersion===1){<p class="notice">Pedido histórico: consulta de solo lectura.</p>
+            }@else{<app-seguimiento-pedido [estado]="p.estado" [tipo]="p.tipoPedido" [horizontal]="true" />}
+            <div class="received-notice"><app-icono-cliente nombre="pedido" />
+                <div>
+                    <h2>{{p.estado==='PENDIENTE'?'¡Recibimos tu pedido!':descripcionEstado(p.estado)}}</h2>
+                    <p>{{descripcionEstado(p.estado)}}</p><small>Actualiza esta página cuando quieras consultar los
+                        cambios. No se muestran horarios estimados ni ubicaciones en vivo.</small>
+                </div>
+            </div>
+        </section>
+        <section class="tracking-panel">
+            <h2>Detalle de tu pedido</h2>
+            <div class="tracking-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>@for(l of p.detalles;track $index){<tr>
+                            <td><strong>{{l.nombreProducto}} @if(l.nombrePresentacion&&l.nombrePresentacion!=='Única'){
+                                    · {{l.nombrePresentacion}}}</strong><small>{{l.promocionId?'Con promoción':'Precio
+                                    regular'}}</small>@if(l.promocionId){<small>Antes
+                                    <s>{{l.precioRegular|currency:'PEN':'S/
+                                        ':'1.2-2'}}</s></small>}<small>{{l.precioUnitario|currency:'PEN':'S/ ':'1.2-2'}}
+                                    por unidad</small></td>
+                            <td>{{l.cantidad}}</td>
+                            <td>{{l.subtotal|currency:'PEN':'S/ ':'1.2-2'}}</td>
+                        </tr>}</tbody>
+                </table>
+            </div>
+            <div class="order-total"><span>Total confirmado</span><strong>{{p.total|currency:'PEN':'S/
+                    ':'1.2-2'}}</strong></div>
+        </section>
+        }
+    </div>
+    <aside class="tracking-aside">
+        <section class="tracking-panel">
+            <h2>Información del pedido</h2>
+            <div class="info-line"><app-icono-cliente nombre="mesa" />
+                <div><strong>Modalidad · {{etiqueta(p.tipoPedido)}}</strong>@if(p.mesaNumero){<small>Mesa
+                        {{p.mesaNumero}}</small>}</div>
+            </div>
+            <div class="info-line"><app-icono-cliente nombre="tarjeta" />
+                <div><strong>Método · {{etiqueta(p.metodoPago)}}</strong><small>Estado del pago</small></div><app-estado
+                    [valor]="p.estadoPago" />
+            </div>
+            <div class="info-line"><app-icono-cliente nombre="pedido" />
+                <div><strong>Pedido #{{p.id}}</strong><small>Número de referencia</small></div>
+            </div>
+            @if(p.tipoPedido==='DELIVERY'&&!publico){<p>{{p.direccionEntrega}}</p>
+            <p>{{p.referenciaEntrega}}</p>}
+        </section>
+        <a class="action secondary" routerLink="/catalogo"><app-icono-cliente nombre="volver" />Volver a la
+            carta</a>@if(!publico){<a routerLink="/mis-pedidos">Volver a mis pedidos</a>}
+    </aside>
+</div>
+}@else{ @if(!error()){<p role="status">Consultando tu pedido…</p>}<ng-container [ngTemplateOutlet]="seguridad" /> }
+<ng-template #seguridad>
+    @if(publico){<details class="secure-access">
+        <summary>Acceso seguro a este pedido</summary>
+        @if(pedido()){
+        <p class="helper">Este navegador conserva una credencial privada de consulta durante 7 días. No la compartas ni
+            borres sus cookies si necesitas volver a consultar el pedido.</p><button type="button" class="secondary"
+            (click)="generarClave()" [disabled]="ocupado()">Generar clave de recuperación</button>
+        @if(claveGenerada()){<p class="helper">{{avisoAcceso()}}</p><label>Clave privada, mostrada solo ahora<input
+                type="text" readonly [value]="claveGenerada()" autocomplete="off" spellcheck="false" /></label>}
+        <details>
+            <summary>Revocar este acceso</summary>
+            <p class="helper">Desactiva la consulta sin cuenta y sus claves, sin eliminar el pedido ni tu historial
+                personal.</p><button type="button" class="secondary" (click)="revocarAcceso()"
+                [disabled]="ocupado()">Confirmar revocación del acceso</button>
+        </details>
+        }@else{<p class="helper">Puedes recuperar la consulta únicamente con una clave guardada previamente. No se
+            buscan pedidos por correo ni teléfono.</p><label>Clave de recuperación<input type="password"
+                [formControl]="claveRecuperacion" autocomplete="off" maxlength="43" /></label><button type="button"
+            (click)="recuperar()" [disabled]="ocupado()||!claveRecuperacion.value">Recuperar acceso</button>}
+    </details>}
+</ng-template>

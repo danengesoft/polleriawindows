@@ -1,0 +1,83 @@
+<div class="page-heading">
+  <h1>Productos</h1>
+  @if (auth.tieneRol('ADMINISTRADOR')) {<a matButton="filled" routerLink="/interno/productos/nuevo">Nuevo producto</a>}
+</div>
+<mat-form-field appearance="outline" class="filter"
+  ><mat-label>Filtrar por categoría</mat-label>
+  <mat-select
+    [canSelectNullableOptions]="true"
+    [value]="categoriaFiltro()"
+    (selectionChange)="filtrar($event.value)"
+  >
+    <mat-option [value]="null">Todas</mat-option>
+    @for (categoria of categorias(); track categoria.id) {
+      <mat-option [value]="categoria.id">{{ categoria.nombre }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+@if (errorCategorias()) {
+  <p role="alert" class="error">{{ errorCategorias() }}</p>
+}
+
+@if (aviso()) {
+  <p role="status" class="notice">{{ aviso() }}</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+  <button matButton (click)="cargar()">Reintentar</button>
+}
+@if (loading()) {
+  <p role="status">Cargando productos…</p>
+}
+@if (eliminando() !== null) {
+  <p role="status">Eliminando…</p>
+}
+<div class="resource-search"><label>Buscar productos<input type="search" [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" placeholder="Buscar por nombre…" /></label><span>{{filtrados().length}} registros</span></div>
+<div class="resource-layout" [class.con-detalle]="seleccionado()"><section>
+<div class="table-region" [attr.aria-busy]="loading()">
+  <table class="data-table">
+    <caption class="sr-only">
+      Listado de productos
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Categoría</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Disponibilidad</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of filtrados(); track item.id) {
+        <tr [class.fila-seleccionada]="seleccionado()?.id===item.id">
+          <td data-label="Nombre">@if(item.imagenUrl){<img class="product-thumb" [src]="item.imagenUrl" alt="" (error)="$any($event.target).hidden=true" />}<button type="button" class="registro-link" (click)="seleccionado.set(item)">{{ item.nombre }}</button></td>
+          <td data-label="Categoría">{{ item.categoria.nombre }}</td>
+          <td data-label="Precio">{{ item.precio | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+          <td data-label="Disponibilidad">
+            {{ item.disponible ? 'Disponible' : 'No disponible' }}
+          </td>
+          <td data-label="Acciones" class="row-actions">
+            @if (auth.tieneRol('ADMINISTRADOR')) {            <a matButton [routerLink]="['/interno/productos', item.id, 'editar']">Editar</a
+            ><button
+              matButton
+              class="danger"
+              [disabled]="eliminando() !== null"
+              (click)="eliminar(item)"
+            >
+              Eliminar
+            </button>
+          }</td>
+        </tr>
+      } @empty {
+        @if (!loading() && !error()) {
+          <tr>
+            <td class="empty" colspan="5">No hay productos registrados.</td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+</section>@if(seleccionado();as registro){<app-registro-detalle [registro]="registro" recurso="producto" base="/interno/productos" [editable]="auth.tieneRol('ADMINISTRADOR')" [eliminable]="auth.tieneRol('ADMINISTRADOR') && eliminando()===null" (eliminar)="eliminar(registro)" (cerrar)="seleccionado.set(null)" />}</div>

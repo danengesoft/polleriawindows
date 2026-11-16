@@ -1,0 +1,65 @@
+<p class="eyebrow">De nuestra cocina a tu mesa</p>
+<h1>{{viendoProductos() ? (categoriaSeleccionada() ? 'Productos de la categoría' : 'Todos los productos') : 'Nuestra
+  carta'}}</h1>
+@if(viendoProductos()){<a routerLink="/catalogo">← Volver a las categorías</a>}
+<p>Descubre nuestros pollos, parrillas y acompañamientos.</p>
+@if(busqueda()){<p role="status">Resultados para «{{busqueda()}}»</p>}
+@if(!viendoProductos()){
+<nav class="catalog-filter" aria-label="Filtrar carta por categoría">
+  <button type="button" [class.active]="!categoriaSeleccionada()" [attr.aria-pressed]="!categoriaSeleccionada()"
+    (click)="abrirCategoria()">
+    <span class="category-square" aria-hidden="true">☰</span><span>Todos</span>
+  </button>
+  @for (c of categorias(); track c.id) {
+  <button type="button" [class.active]="categoriaSeleccionada() === c.id.toString()"
+    [attr.aria-pressed]="categoriaSeleccionada() === c.id.toString()" (click)="abrirCategoria(c.id.toString())">
+    <span class="category-square" aria-hidden="true">{{ c.nombre.charAt(0) }}</span><span>{{ c.nombre }}</span>
+  </button>
+  }
+</nav>
+}
+@if (error()) {
+<p role="alert">{{ error() }}</p>
+<button (click)="cargar(categoriaSeleccionada())">Reintentar</button>
+}
+@if (cargando()) {
+<p role="status">Cargando catálogo…</p>
+}
+<p role="status" aria-live="polite">{{ aviso() }}</p>
+@if(viendoProductos()){
+<div class="catalog-grid">
+  @for (p of filtrados(); track p.id) {
+  <article class="menu-card card" [class.unavailable]="!p.disponible">
+    <button type="button" class="menu-photo" (click)="verDetalle(p)" [attr.aria-label]="'Ver detalle de ' + p.nombre">
+      <app-foto-producto [url]="p.imagenUrl" [nombre]="p.nombre" />
+    </button>
+    <div class="product-info">
+      <p class="eyebrow">{{ p.categoria.nombre }}</p>
+      <h2>
+        <button type="button" (click)="verDetalle(p)">{{ p.nombre }}</button>
+      </h2>
+      <p>{{ p.descripcion }}</p>
+      <strong class="price">@if((p.presentaciones?.length||0)>1){Desde }{{ p.precio | currency: 'PEN' : 'S/ ' : '1.2-2'
+        }}</strong>
+      <div class="product-actions">
+        <button type="button" class="text-link" (click)="verDetalle(p)">Ver plato</button><button type="button"
+          [disabled]="!p.disponible" (click)="agregar(p)">
+          {{ p.disponible ? 'Agregar' : 'No disponible' }}
+        </button>
+      </div>
+    </div>
+  </article>
+  } @empty {
+  @if (!cargando() && !error()) {
+  <div class="empty-state">
+    <h2>Estamos preparando la carta</h2>
+    <p>No hay productos en esta categoría por el momento.</p>
+  </div>
+  }
+  }
+</div>
+}
+<div class="actions">
+  <a class="action" routerLink="/carrito">Ver mi carrito <app-icono-cliente nombre="flecha" /></a><a
+    routerLink="/inicio">Volver al inicio</a>
+</div>

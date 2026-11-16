@@ -1,0 +1,205 @@
+.cliente-premium .ivory-panel {
+  --ink: #251e16;
+  --muted: #6e6356;
+  --line: #d4c9b9;
+  --gold: #82602b;
+  color-scheme: light;
+  background: #f2ebdf;
+  color: var(--ink);
+  border: 1px solid #e7d8c2;
+  border-radius: 10px;
+  padding: 26px;
+  box-shadow: 0 8px 32px #0003;
+}
+.cliente-premium .ivory-panel input,
+.cliente-premium .ivory-panel select,
+.cliente-premium .ivory-panel textarea {
+  background: #f8f2e8;
+}
+.cliente-premium .ivory-panel h2,
+.cliente-premium .ivory-panel h3 {
+  color: var(--ink);
+}
+.cliente-premium .client-panel {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 24px;
+  background: #171611;
+}
+.cliente-premium .empty-state {
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #181712;
+  margin: 24px 0;
+}
+.cliente-premium .catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 24px 0;
+}
+.cliente-premium .menu-card {
+  border: 1px solid #645337;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(120deg, #30251b, #141411);
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  min-width: 0;
+}
+.cliente-premium .menu-card.unavailable {
+  opacity: 0.65;
+}
+.cliente-premium .menu-card button.menu-photo {
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  display: block;
+  min-width: 0;
+  width: 100%;
+  border-radius: 0;
+}
+.cliente-premium .product-info {
+  padding: 20px;
+  min-width: 0;
+}
+.cliente-premium .product-info h2 {
+  font-size: 1.5rem;
+  margin: 0 0 10px;
+}
+.cliente-premium .product-info h2 button {
+  font: inherit !important;
+  color: inherit !important;
+  background: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+  text-align: left;
+  min-height: 0 !important;
+}
+.cliente-premium .product-info p {
+  font-size: 0.86rem;
+  margin-bottom: 12px;
+}
+.cliente-premium .product-info .price {
+  font-size: 1.15rem;
+}
+.cliente-premium .product-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.cliente-premium .linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  gap: 12px;
+  padding: 16px 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.cliente-premium .linea h2,
+.cliente-premium .linea h3,
+.cliente-premium .linea p {
+  margin: 0;
+}
+.cliente-premium .cart-line {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr) auto;
+  gap: 16px;
+}
+.cliente-premium .cart-line h2 {
+  font-size: 1.2rem;
+}
+.cliente-premium .cart-line p {
+  font-size: 0.85rem;
+}
+.cliente-premium .cart-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.cliente-premium .cart-total {
+  margin-top: 24px;
+}
+.cliente-premium .summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.92rem;
+}
+.cliente-premium .summary-row:last-child {
+  border: 0;
+}
+.cliente-premium .order-history {
+  margin: 16px 0;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #171611;
+}
+.cliente-premium .order-history h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+.cliente-premium .order-history p {
+  font-size: 0.9rem;
+}
+.cliente-premium .order-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.cliente-premium details {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 24px 0;
+}
+.cliente-premium summary {
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 1.5rem;
+}
+.cliente-premium .order-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 1.3rem;
+}
+.cliente-premium .muted {
+  color: var(--muted);
+}
+.cliente-premium .checkout-heading {
+  margin-bottom: 28px;
+}
+.cliente-premium .step-tabs {
+  display: flex;
+  list-style: none;
+  gap: 10px;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.cliente-premium .step-tabs li {
+  flex: 1;
+  border-bottom: 2px solid var(--line);
+  padding: 10px 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.cliente-premium .step-tabs li.active {
+  border-color: var(--accent);
+  color: var(--ink);
+}

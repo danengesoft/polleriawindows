@@ -1,0 +1,72 @@
+<div class="cliente-premium">
+  <a class="client-skip" [routerLink]="[]" fragment="contenido-cliente">Saltar al contenido</a>
+  <header class="client-header">
+    <div class="client-header-inner">
+      <button #menuButton class="client-icon menu-button" type="button"
+        [attr.aria-label]="menuAbierto() ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'"
+        [attr.aria-expanded]="menuAbierto()" aria-controls="client-menu" (click)="menuAbierto.set(!menuAbierto())"
+        (keydown.escape)="cerrarMenu(menuButton)">
+        <app-icono-cliente nombre="menu" />
+      </button>
+      <a class="client-brand" routerLink="/inicio" aria-label="Polleria Neyos, inicio">Polleria
+        <span>Neyos</span><small>POLLOS Y PARRILLAS</small></a>
+      <form class="header-search" [class.search-open]="buscarAbierto()" (submit)="buscar($event)"><label
+          class="search-label" for="carta-busqueda">Buscar en la carta</label><input id="carta-busqueda" type="search"
+          [formControl]="busqueda" maxlength="120" placeholder="Busca tu plato favorito…" /><button type="submit"
+          class="client-icon" aria-label="Buscar productos"><app-icono-cliente nombre="buscar" /></button></form>
+      <div class="client-header-actions"><button type="button" class="client-icon mobile-search"
+          aria-label="Abrir búsqueda" [attr.aria-expanded]="buscarAbierto()"
+          (click)="buscarAbierto.set(!buscarAbierto())"><app-icono-cliente
+            nombre="buscar" /></button>@if(auth.usuario()){<a class="header-login" routerLink="/perfil">Mi
+          cuenta</a>}@else{<button type="button" class="header-login" (click)="acceso.abrir()">Iniciar
+          sesión</button>}<a class="client-icon client-cart" routerLink="/carrito"
+          [attr.aria-label]="'Ver carrito, ' + carrito.unidades() + ' unidades'"><app-icono-cliente
+            nombre="carrito" /><span>{{ carrito.unidades() }}</span></a>
+        <a class="cart-total" routerLink="/carrito"
+          aria-label="Total estimado del carrito">{{carrito.total()|currency:'PEN':'S/ ':'1.2-2'}}</a>
+      </div>
+    </div>
+    <nav class="client-shortcuts" aria-label="Accesos de la carta"><a routerLink="/catalogo"><app-icono-cliente
+          nombre="carta" />Carta</a><button type="button" class="secondary location-shortcut"
+        (click)="abrirUbicacion()"><app-icono-cliente nombre="ubicacion" />Ubicación</button></nav>
+    @if (menuAbierto()) {
+    <nav class="client-menu" id="client-menu" aria-label="Navegación de inicio"
+      (keydown.escape)="cerrarMenu(menuButton)">
+      <a routerLink="/inicio" (click)="cerrarMenu()">Inicio</a><a routerLink="/catalogo" (click)="cerrarMenu()">Nuestra
+        carta</a><a routerLink="/carrito" (click)="cerrarMenu()">Mi carrito</a>
+      @if (auth.tieneRol('CLIENTE')) {
+      <a routerLink="/mis-pedidos" (click)="cerrarMenu()">Mis pedidos</a><a routerLink="/perfil"
+        (click)="cerrarMenu()">Mi perfil</a>
+      }
+      @if (auth.tieneRol(...internos)) {
+      <a routerLink="/interno" (click)="cerrarMenu()">Portal interno</a>
+      }
+      @if (auth.usuario()) {
+      <button type="button" (click)="cerrarMenu(); auth.cerrarSesion()">Cerrar sesión</button>
+      } @else {
+      <button type="button" (click)="cerrarMenu(); acceso.abrir()">Iniciar sesión / Registrarme</button>
+      }
+    </nav>
+    }
+  </header>
+  <main class="client-content" [class.client-wide]="amplio()" id="contenido-cliente" tabindex="-1">
+    <ng-content />
+  </main>
+  <footer class="client-footer">
+    <a class="client-brand" routerLink="/inicio">Polleria <span>Neyos</span></a>
+    <p>Pollos y parrillas · El sabor de compartir</p>
+
+  </footer>
+  <nav class="client-bottom" aria-label="Navegación del cliente">
+    <a routerLink="/inicio" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-cliente
+        nombre="inicio" />Inicio</a>
+    <a routerLink="/catalogo" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-cliente
+        nombre="carta" />Carta</a>
+    <a routerLink="/mis-pedidos" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-cliente
+        nombre="pedido" />Pedidos</a>
+    @if(auth.usuario()){<a routerLink="/perfil" routerLinkActive="active"
+      ariaCurrentWhenActive="page"><app-icono-cliente nombre="cuenta" />Cuenta</a>}@else{<button type="button"
+      class="client-account" (click)="acceso.abrir()"><app-icono-cliente nombre="cuenta" />Iniciar sesión</button>}
+
+  </nav>
+</div>

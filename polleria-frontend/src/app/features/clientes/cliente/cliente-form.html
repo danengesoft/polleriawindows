@@ -1,0 +1,72 @@
+<h1>{{ id() === null ? 'Nuevo cliente' : 'Editar cliente' }}</h1>
+@if (loading()) {
+  <p role="status">Cargando cliente…</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+}
+
+@if (!loading() && !errorCarga()) {
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="resource-form">
+    <mat-form-field appearance="outline"
+      ><mat-label>Nombres</mat-label
+      ><input
+        matInput
+        type="text"
+        required
+        formControlName="nombres"
+        maxlength="100"
+      /><mat-error>{{ validacion(form.controls.nombres) }}</mat-error></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>Apellidos</mat-label
+      ><input
+        matInput
+        type="text"
+        required
+        formControlName="apellidos"
+        maxlength="100"
+      /><mat-error>{{ validacion(form.controls.apellidos) }}</mat-error></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>Teléfono</mat-label
+      ><input
+        matInput
+        type="tel"
+        autocomplete="tel"
+        required
+        formControlName="telefono"
+        maxlength="12"
+      /><mat-hint>7–9 dígitos, con +51 opcional. Sin espacios.</mat-hint
+      ><mat-error>{{ validacion(form.controls.telefono) }}</mat-error></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>Correo Gmail (opcional)</mat-label
+      ><input
+        matInput
+        type="email"
+        autocomplete="email"
+        formControlName="correo"
+        maxlength="254"
+      /><mat-hint>Al registrar un correo nuevo utiliza @gmail.com.</mat-hint><mat-error>{{ form.controls.correo.hasError('gmail') ? 'Utiliza un correo @gmail.com.' : validacion(form.controls.correo) }}</mat-error></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>Dirección principal</mat-label
+      ><textarea matInput formControlName="direccionPrincipal" rows="3" maxlength="300"></textarea
+      ><mat-error>{{ validacion(form.controls.direccionPrincipal) }}</mat-error></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>Referencia</mat-label
+      ><textarea matInput formControlName="referencia" rows="3" maxlength="300"></textarea
+      ><mat-error>{{ validacion(form.controls.referencia) }}</mat-error></mat-form-field
+    >
+    <mat-checkbox formControlName="activo">Activo</mat-checkbox>
+    <div class="form-actions">
+      <button matButton="filled" type="submit" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar' }}</button
+      ><a matButton routerLink="/interno/clientes">Cancelar</a>
+    </div>
+  </form>
+} @else {
+  <a matButton routerLink="/interno/clientes">Volver al listado</a>
+}

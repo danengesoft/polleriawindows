@@ -1,0 +1,28 @@
+server:
+  address: 127.0.0.1
+  port: 8080
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:38080/realms/polleria}
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1522/FREEPDB1
+    username: POLLERIA
+    password: ${ORACLE_APP_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+management:
+  endpoint:
+    health:
+      show-details: never
+polleria:
+  pagos:
+    simulador-habilitado: ${PAGO_SIMULADOR_HABILITADO:false}
+  web:
+    cookie-secure: false
+  cors:
+    allowed-origins: http://localhost:4200

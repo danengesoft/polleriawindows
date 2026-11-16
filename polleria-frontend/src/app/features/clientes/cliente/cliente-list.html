@@ -1,0 +1,71 @@
+<div class="page-heading">
+  <h1>Clientes</h1>
+  <a matButton="filled" routerLink="/interno/clientes/nuevo">Nuevo cliente</a>
+</div>
+
+@if (aviso()) {
+<p role="status" class="notice">{{ aviso() }}</p>
+}
+@if (error()) {
+<p role="alert" class="error">{{ error() }}</p>
+<button matButton (click)="cargar()">Reintentar</button>
+}
+@if (loading()) {
+<p role="status">Cargando clientes…</p>
+}
+@if (eliminando() !== null) {
+<p role="status">Eliminando…</p>
+}
+<div class="metric-grid">
+  <article><small>Clientes registrados</small><strong>{{datos().length}}</strong></article>
+  <article><small>Clientes activos</small><strong>{{activos()}}</strong></article>
+</div>
+<div class="resource-search"><label>Buscar clientes<input type="search" [value]="busqueda()"
+      (input)="busqueda.set($any($event.target).value)"
+      placeholder="Buscar por nombre, teléfono o correo…" /></label><span>{{filtrados().length}} registros</span></div>
+<div class="resource-layout" [class.con-detalle]="seleccionado()">
+  <section>
+    <div class="table-region" [attr.aria-busy]="loading()">
+      <table class="data-table">
+        <caption class="sr-only">
+          Listado de clientes
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Nombre completo</th>
+            <th scope="col">Teléfono</th>
+            <th scope="col">Correo</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filtrados(); track item.id) {
+          <tr [class.fila-seleccionada]="seleccionado()?.id===item.id">
+            <td data-label="Nombre completo"><button type="button" class="registro-link"
+                (click)="seleccionado.set(item)">{{ item.nombres }} {{ item.apellidos }}</button></td>
+            <td data-label="Teléfono">{{ item.telefono }}</td>
+            <td data-label="Correo">{{ item.correo || '—' }}</td>
+            <td data-label="Estado">{{ item.activo ? 'Activo' : 'Inactivo' }}</td>
+            <td data-label="Acciones" class="row-actions">
+              <a matButton [routerLink]="['/interno/clientes', item.id, 'editar']">Editar</a>@if
+              (auth.tieneRol('ADMINISTRADOR')) {@if(item.eliminable === true){<button matButton class="danger"
+                [disabled]="eliminando() !== null" (click)="eliminar(item)">
+                Eliminar
+              </button>}}
+            </td>
+          </tr>
+          } @empty {
+          @if (!loading() && !error()) {
+          <tr>
+            <td class="empty" colspan="5">No hay clientes registrados.</td>
+          </tr>
+          }
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </section>@if(seleccionado();as registro){<app-registro-detalle [registro]="registro" recurso="cliente"
+    base="/interno/clientes" [editable]="auth.tieneRol('ADMINISTRADOR','CAJERO')" (cerrar)="seleccionado.set(null)" />}
+</div>

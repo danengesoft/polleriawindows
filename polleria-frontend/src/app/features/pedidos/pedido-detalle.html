@@ -1,0 +1,137 @@
+<div class="page-heading">
+  <h1>Detalle del pedido</h1>
+  <a matButton routerLink="/interno/pedidos">Volver al listado</a>
+</div>
+@if (loading()) {
+  <p role="status">Cargando pedido…</p>
+}
+@if (aviso()) {
+  <p role="status" class="notice">{{ aviso() }}</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+  <button matButton (click)="cargar()" [disabled]="cambiando()">Actualizar pedido</button>
+}
+@if (pedido(); as p) {
+  <h2>Pedido #{{ p.id }}</h2>
+  <div class="detail-sections">
+    <section>
+      <h3>Pedido</h3>
+      <dl class="order-summary">
+        <div>
+          <dt>Fecha</dt>
+          <dd>{{ p.fecha | date: 'dd/MM/yyyy HH:mm' }}</dd>
+        </div>
+        <div>
+          <dt>Tipo</dt>
+          <dd>{{ etiqueta(p.tipoPedido) }} @if(p.mesaNumero){· Mesa {{p.mesaNumero}}}</dd>
+        </div>
+        <div>
+          <dt>Estado</dt>
+          <dd><app-estado [valor]="p.estado" /></dd>
+        </div>
+      </dl>
+    </section>
+    <section>
+      <h3>Cliente</h3>
+      <dl class="order-summary">
+        <div>
+          <dt>Nombre</dt>
+          <dd>{{ p.cliente.nombres }} {{ p.cliente.apellidos }}</dd>
+        </div>
+      </dl>
+    </section>
+    <section>
+      <h3>Entrega</h3>
+      <dl class="order-summary">
+        <div>
+          <dt>Modalidad</dt>
+          <dd>{{ etiqueta(p.tipoPedido) }} @if(p.mesaNumero){· Mesa {{p.mesaNumero}}}</dd>
+        </div>
+        @if (p.direccionEntrega) {
+          <div>
+            <dt>Dirección de entrega</dt>
+            <dd>{{ p.direccionEntrega }}</dd>
+          </div>
+        }
+        @if (p.referenciaEntrega) {
+          <div>
+            <dt>Referencia de entrega</dt>
+            <dd>{{ p.referenciaEntrega }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+    <section>
+      <h3>Pago</h3>
+      <dl class="order-summary">
+        <div>
+          <dt>Método de pago</dt>
+          <dd>{{ etiqueta(p.metodoPago) }}</dd>
+        </div>
+        <div>
+          <dt>Estado del pago</dt>
+          <dd><app-estado [valor]="p.estadoPago" /></dd>
+        </div>
+      </dl>
+    </section>
+  </div>
+  <h2>Productos del pedido</h2>
+  <p class="muted">Precios históricos registrados por el servidor.</p>
+  <table class="data-table">
+    <caption class="sr-only">
+      Detalles históricos del pedido
+    </caption>
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Precio unitario</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (linea of p.detalles; track $index) {
+        <tr>
+          <td data-label="Producto">{{ linea.nombreProducto }} @if(linea.nombrePresentacion&&linea.nombrePresentacion!=='Única'){ · {{linea.nombrePresentacion}}}<small>{{linea.promocionId?'Con promoción':'Precio regular'}}</small>@if(linea.promocionId){<small>Antes <s>{{linea.precioRegular|currency:'PEN':'S/ ':'1.2-2'}}</s></small>}</td>
+          <td data-label="Precio unitario">
+            {{ linea.precioUnitario | currency: 'PEN' : 'S/ ' : '1.2-2' }}
+          </td>
+          <td data-label="Cantidad">{{ linea.cantidad }}</td>
+          <td data-label="Subtotal">{{ linea.subtotal | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <p class="order-total">
+    Total confirmado <strong>{{ p.total | currency: 'PEN' : 'S/ ' : '1.2-2' }}</strong>
+  </p>
+  <section aria-labelledby="estado-pedido">
+    <h2 id="estado-pedido">Seguimiento</h2>
+    <div class="form-actions">
+      @for (estado of opciones(); track $index) {
+        <button
+          matButton="outlined"
+          [disabled]="cambiando() || loading()"
+          (click)="cambiarEstado(estado)"
+        >
+          {{ estado === 'CANCELADO' ? 'Cancelar pedido' : 'Pasar a ' + etiqueta(estado) }}
+        </button>
+      }
+    </div>
+    @if (cambiando()) {
+      <p role="status">Procesando cambio de estado…</p>
+    }
+
+
+    @if (p.flujoVersion !== 1 && (p.tipoPedido==='MESA'||p.tipoPedido==='PARA_LLEVAR') && p.estadoPago === 'PENDIENTE' && p.metodoPago === 'EFECTIVO' && auth.tieneRol('CAJERO','ADMINISTRADOR') && p.estado !== 'CANCELADO') {
+      <button matButton="outlined" [disabled]="cambiando() || loading()" (click)="confirmarPago()">
+        Confirmar efectivo recibido
+      </button>
+    }
+    @if(p.estadoPago === 'PENDIENTE' && p.metodoPago !== 'EFECTIVO'){<p class="notice">Pago electrónico pendiente. Se confirmará mediante una pasarela autorizada; aún no hay una conectada.</p>}
+    @if (!opciones().length && p.estado !== 'LISTO') {
+      <p class="muted">No hay cambios de estado disponibles.</p>
+    }
+  </section>
+}

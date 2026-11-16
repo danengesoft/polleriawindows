@@ -1,0 +1,130 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 80px;
+  padding-block: 0.8rem;
+}
+.brand {
+  font-weight: 750;
+  font-size: 1.05rem;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.025em;
+}
+.internal-body {
+  display: grid;
+  grid-template-columns: 12rem minmax(0, 1fr);
+  gap: 2rem;
+  padding-block: 2rem;
+}
+aside {
+  border-right: 1px solid var(--line);
+  padding-right: 1.25rem;
+  min-width: 0;
+}
+aside > .eyebrow {
+  padding-left: 0.75rem;
+}
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+nav a {
+  padding: 0.7rem 0.75rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.9rem;
+  min-height: 44px;
+}
+nav a:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+nav a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 650;
+}
+main {
+  min-width: 0;
+}
+main:focus {
+  outline: none;
+}
+.portal-toggle {
+  display: none;
+}
+.nav-section {
+  padding-left: 0.75rem;
+}
+@media (max-width: 1000px) {
+  .internal-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding-block: 1.25rem;
+  }
+  aside {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 1rem;
+  }
+  aside > .eyebrow {
+    display: none;
+  }
+  .portal-toggle {
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  nav {
+    display: none;
+    margin-top: 0.75rem;
+  }
+  nav.abierto {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .nav-section {
+    grid-column: 1/-1;
+  }
+  nav a {
+    overflow-wrap: anywhere;
+  }
+  .header-row {
+    flex-wrap: wrap;
+  }
+}
+/* Marco del portal inspirado en las referencias de operaciones. */
+.header-row{min-height:80px}.brand{font-size:clamp(.9rem,1.3vw,1.35rem)}
+.internal-body{grid-template-columns:230px minmax(0,1fr);gap:2rem;min-height:calc(100dvh - 80px);padding-block:2rem}
+aside{padding-right:1.25rem}nav{gap:.5rem}nav a{padding:.85rem 1rem;font-size:.95rem;border-radius:10px}nav a.active,nav a:hover{background:var(--accent-soft);color:var(--accent)}nav a.active{box-shadow:inset 3px 0 var(--accent)}main{width:100%}
+@media(max-width:1000px){.internal-body{grid-template-columns:minmax(0,1fr);gap:1rem;padding-block:1.2rem}.header-row{gap:.5rem}.brand{font-size:1rem}}
+nav a{display:flex;align-items:center;gap:.8rem}
+
+/* El marco ocupa la ventana; solo el contenido y, si hace falta, el menú desplazan. */
+:host{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.site-header{flex:none}.internal-body{flex:1;min-height:0;overflow:hidden;padding-block:1.5rem}
+aside{overflow-y:auto;overscroll-behavior:contain}main{overflow:auto;min-height:0;padding-right:8px;overscroll-behavior:contain}
+@media(max-width:1000px){.internal-body{display:flex;flex-direction:column}.internal-body aside{flex:none;max-height:45dvh}.internal-body main{flex:1}nav.abierto{padding-bottom:8px}}
+
+.session-row{display:flex;align-items:center;gap:.6rem;min-width:0}
+@media(max-width:1000px){
+  .header-row{flex-direction:column;align-items:stretch;gap:.7rem;padding-block:.8rem}
+  .session-row{width:100%}
+  .session-row .portal-toggle{width:auto;flex:none;margin:0;padding:10px 12px;font-size:.8rem;min-height:44px}
+  .session-row app-navigation{flex:1;min-width:0}
+  .internal-body aside{border:0;padding:0}
+  .internal-body aside:has(nav:not(.abierto)){display:none}
+}

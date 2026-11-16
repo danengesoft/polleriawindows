@@ -1,0 +1,47 @@
+server:
+  address: 0.0.0.0
+  port: 8080
+  forward-headers-strategy: framework
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+spring:
+  datasource:
+    url: ${ORACLE_JDBC_URL}
+    username: ${ORACLE_APP_USER}
+    password: ${ORACLE_APP_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+          # Firma por DNS interno; la validación de iss conserva la URL pública exacta.
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: OFF
+    org.hibernate.orm.jdbc.bind: OFF
+polleria:
+  pagos:
+    simulador-habilitado: ${PAGO_SIMULADOR_HABILITADO:false}
+  web:
+    cookie-secure: ${WEB_COOKIE_SECURE:true}
+  cors:
+    allowed-origins: ${PUBLIC_APP_URL}

@@ -1,0 +1,61 @@
+.premium-hero {
+  position: relative;
+  min-height: 570px;
+  display: flex;
+  align-items: center;
+  background: #100d09 url('/images/la-brava/inicio-hero.png') 64% 55% / cover no-repeat;
+}
+.premium-hero:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #000d, transparent 90%), linear-gradient(0deg, #0c0c0b, transparent 30%);
+}
+.hero-content {
+  position: relative;
+  width: min(1100px, 100%);
+  padding: 55px 28px;
+  margin: auto;
+}
+.hero-content .eyebrow {
+  color: #ddc39a;
+  font-size: 0.72rem;
+  letter-spacing: 0.23em;
+}
+.hero-content h1 {
+  font-size: clamp(2.3rem, 4.7vw, 4.5rem);
+  max-width: 15ch;
+  line-height: 1.04;
+  font-weight: 400;
+}
+.hero-content h1 span {
+  display: block;
+  color: #d7b67e;
+}
+.gold-rule {
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: #b82228;
+  margin: 24px 0;
+}
+.hero-description {
+  max-width: 340px;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #e2dace !important;
+}
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+.hero-actions .action {
+  min-width: 160px;
+  min-height: 48px;
+}
+.hero-actions .action:first-child {
+  border-color: #af8c57 !important;
+}
+.hero-content{max-width:none;width:100%}

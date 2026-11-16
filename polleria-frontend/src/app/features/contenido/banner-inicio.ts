@@ -1,0 +1,15 @@
+import { Component, DestroyRef, inject, signal, computed } from '@angular/core';
+import { BannersService, Banner, BANNER_ORIGINAL } from './banners-service';
+@Component({
+    selector: 'app-banner-inicio', template: `
+<section class="banner-carousel" aria-label="Fotografías de La Brava" aria-roledescription="carrusel">
+ <picture><img [src]="api.imagen(actual().imagenUrl)" [alt]="actual().titulo" fetchpriority="high" (error)="fallo()"/></picture>
+ @if(banners().length>1){<button class="carousel-arrow previous" type="button" aria-label="Foto anterior" (click)="mover(-1)">‹</button><button class="carousel-arrow next" type="button" aria-label="Foto siguiente" (click)="mover(1)">›</button><div class="carousel-dots" aria-label="Elegir fotografía">@for(b of banners();track b.id;let i=$index){<button type="button" [class.active]="indice()===i" [attr.aria-label]="'Mostrar foto '+(i+1)" [attr.aria-pressed]="indice()===i" (click)="indice.set(i)"></button>}</div>}
+</section>`, styles: `:host{display:block;min-width:0}.banner-carousel{position:relative;background:#100e0c;overflow:hidden;border-radius:14px}picture{display:block;height:clamp(280px,36vw,520px)}img{display:block;width:100%;height:100%;object-fit:contain}.carousel-arrow{position:absolute;top:45%;border:1px solid #ac844b!important;background:#98242bdd!important;color:white!important;min-width:38px;min-height:48px;font-size:2rem!important;padding:0!important;border-radius:7px!important}.previous{left:8px}.next{right:8px}.carousel-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:#111c;padding:5px 8px;border-radius:20px}.carousel-dots button:not(.pause){height:10px!important;width:10px!important;min-height:10px!important;min-width:10px!important;border-radius:50%!important;padding:0!important;border:1px solid #f2dfbf!important;background:#8b8072!important}.carousel-dots button.active{background:#c52035!important}.carousel-dots .pause{padding:0 5px!important;min-height:24px!important;font-size:.8rem!important;background:transparent!important;border:0!important;color:white!important}@media(max-width:700px){picture{height:auto}img{height:auto;max-height:65vh;object-fit:contain}.banner-carousel{border-radius:10px}.carousel-arrow{min-height:40px;top:40%}}`
+})
+export class BannerInicio {
+    readonly api = inject(BannersService); readonly banners = signal<Banner[]>([BANNER_ORIGINAL]); readonly indice = signal(0); readonly actual = computed(() => this.banners()[this.indice()] || BANNER_ORIGINAL);
+    constructor() { this.api.publicos().subscribe({ next: r => { if (r.banners.length) this.banners.set(r.banners); }, error: () => { } }); const reloj = setInterval(() => { if (this.banners().length > 1 && !document.hidden) this.mover(1); }, 6000); inject(DestroyRef).onDestroy(() => clearInterval(reloj)); }
+    mover(paso: number) { this.indice.set((this.indice() + paso + this.banners().length) % this.banners().length); }
+    fallo() { if (this.actual().imagenUrl !== BANNER_ORIGINAL.imagenUrl) { this.banners.update(v => v.filter(b => b.id !== this.actual().id)); this.indice.set(0); } }
+}

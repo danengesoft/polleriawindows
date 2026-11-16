@@ -1,0 +1,13 @@
+server {
+    listen 80;
+    server_name ${APP_DOMAIN};
+    return 308 https://${APP_DOMAIN}$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name ${APP_DOMAIN};
+    ssl_certificate /etc/nginx/certs/fullchain.pem;
+    ssl_certificate_key /etc/nginx/certs/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    include /etc/nginx/polleria/locations.conf;
+}

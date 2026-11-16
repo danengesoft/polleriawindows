@@ -1,0 +1,80 @@
+<div class="page-heading">
+  <h1>Pedidos</h1>
+  <a matButton="filled" routerLink="/interno/pedidos/nuevo">Nuevo pedido</a>
+</div>
+<div class="form-actions">
+  <mat-form-field appearance="outline" class="filter"
+    ><mat-label>Estado</mat-label
+    ><mat-select
+      [canSelectNullableOptions]="true"
+      [value]="estado()"
+      (selectionChange)="filtrarEstado($event.value)"
+      ><mat-option [value]="null">Todos</mat-option>
+      @for (valor of estados; track valor) {
+        <mat-option [value]="valor">{{ etiqueta(valor) }}</mat-option>
+      }
+    </mat-select></mat-form-field
+  >
+  <mat-form-field appearance="outline" class="filter"
+    ><mat-label>Tipo de pedido</mat-label
+    ><mat-select
+      [canSelectNullableOptions]="true"
+      [value]="tipo()"
+      (selectionChange)="filtrarTipo($event.value)"
+      ><mat-option [value]="null">Todos</mat-option>
+      @for (valor of tipos; track valor) {
+        <mat-option [value]="valor">{{ etiqueta(valor) }}</mat-option>
+      }
+    </mat-select></mat-form-field
+  >
+</div>
+@if (loading()) {
+  <p role="status">Cargando pedidos…</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+  <button matButton (click)="cargar()">Reintentar</button>
+}
+<div class="resource-layout" [class.con-detalle]="seleccionado()"><section><div class="table-region" [attr.aria-busy]="loading()">
+  <table class="data-table">
+    <caption class="sr-only">
+      Listado de pedidos
+    </caption>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Fecha</th>
+        <th>Cliente</th>
+        <th>Tipo</th>
+        <th>Estado</th>
+        <th>Pago</th>
+        <th>Total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (pedido of pedidos(); track pedido.id) {
+        <tr>
+          <td data-label="ID"><button class="registro-link" type="button" (click)="seleccionado.set(pedido)">#{{ pedido.id }}</button></td>
+          <td data-label="Fecha">{{ pedido.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td data-label="Cliente">{{ pedido.cliente.nombres }} {{ pedido.cliente.apellidos }}</td>
+          <td data-label="Tipo">{{ etiqueta(pedido.tipoPedido) }}</td>
+          <td data-label="Estado"><app-estado [valor]="pedido.estado" /></td>
+          <td data-label="Pago"><app-estado [valor]="pedido.estadoPago" /></td>
+          <td data-label="Total">{{ pedido.total | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
+          <td data-label="Acciones">
+            <a matButton [routerLink]="['/interno/pedidos', pedido.id]">Ver detalle</a>
+          </td>
+        </tr>
+      } @empty {
+        @if (!loading() && !error()) {
+          <tr>
+            <td colspan="8" class="empty">No hay pedidos para estos filtros.</td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+</section>@if(seleccionado();as p){<aside class="operation-board order-preview"><div class="ticket-top"><h2>Pedido #{{p.id}}</h2><button class="secondary" type="button" aria-label="Cerrar detalle de pedido" (click)="seleccionado.set(null)">×</button></div><p>{{p.fecha|date:'dd/MM/yyyy HH:mm'}}</p><p><strong>{{p.cliente.nombres}} {{p.cliente.apellidos}}</strong></p><p>{{etiqueta(p.tipoPedido)}} @if(p.mesaNumero){ · Mesa {{p.mesaNumero}}}</p><div class="order-badges"><app-estado [valor]="p.estado" /><app-estado [valor]="p.estadoPago" /></div><h3>Productos del pedido</h3>@for(d of p.detalles;track $index){<div class="summary-row"><span>{{d.cantidad}} × {{d.nombreProducto}} @if(d.nombrePresentacion&&d.nombrePresentacion!=='Única'){ · {{d.nombrePresentacion}}}</span><strong>{{d.subtotal|currency:'PEN':'S/ ':'1.2-2'}}</strong></div>}<h3>Total {{p.total|currency:'PEN':'S/ ':'1.2-2'}}</h3><a class="action" [routerLink]="['/interno/pedidos',p.id]">Abrir pedido</a></aside>}</div>

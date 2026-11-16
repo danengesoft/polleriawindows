@@ -1,0 +1,166 @@
+<section><h2>Carta completa</h2><div class="carta-venta">@for(p of productos();track p.id){<article><h3>{{p.nombre}}</h3><p>{{p.precio|currency:'PEN'}}</p><button type="button" [disabled]="!p.disponible || guardando()" (click)="agregarDesdeCarta(p.id)">{{p.disponible?'Agregar':'No disponible'}}</button></article>}</div></section>
+<h1>Nuevo pedido</h1>
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+@if (!clientesCargados() && !errorClientes()) {
+  <p role="status">Cargando clientes…</p>
+}
+@if (!productosCargados() && !errorProductos()) {
+  <p role="status">Cargando productos…</p>
+}
+@if (errorClientes()) {
+  <p class="error" role="alert">{{ errorClientes() }}</p>
+  <button matButton (click)="cargarClientes()">Reintentar clientes</button>
+}
+@if (errorProductos()) {
+  <p class="error" role="alert">{{ errorProductos() }}</p>
+  <button matButton (click)="cargarProductos()">Reintentar productos</button>
+}
+@if (clientesCargados() && !clientes().length) {
+  <p class="notice">No hay clientes. <a routerLink="/interno/clientes/nuevo">Crear cliente</a></p>
+}
+@if (productosCargados() && !productos().length) {
+  <p class="notice">
+    No hay productos disponibles. <a routerLink="/interno/productos">Revisar productos</a>
+  </p>
+}
+<form [formGroup]="form" (ngSubmit)="confirmarYGuardar()">
+  <section aria-labelledby="cabecera">
+    <h2 id="cabecera">Datos del pedido</h2>
+    <div class="header-fields">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic"
+        ><mat-label>Cliente</mat-label
+        ><mat-select formControlName="clienteId"
+          ><mat-option [value]="0" disabled>Selecciona un cliente</mat-option>
+          @for (cliente of clientes(); track cliente.id) {
+            <mat-option [value]="cliente.id"
+              >{{ cliente.nombres }} {{ cliente.apellidos }} · {{ cliente.telefono }}</mat-option
+            >
+          }</mat-select
+        ><mat-error>Selecciona un cliente.</mat-error></mat-form-field
+      >
+      <mat-form-field appearance="outline" subscriptSizing="dynamic"
+        ><mat-label>Tipo de pedido</mat-label
+        ><mat-select formControlName="tipoPedido">
+          @for (tipo of tipos; track tipo) {
+            <mat-option [value]="tipo">{{ etiqueta(tipo) }}</mat-option>
+          }
+        </mat-select></mat-form-field
+      >
+      <mat-form-field appearance="outline" subscriptSizing="dynamic"
+        ><mat-label>Método de pago</mat-label
+        ><mat-select formControlName="metodoPago">
+          @for (metodo of metodos; track metodo) {
+            <mat-option [value]="metodo">{{ etiqueta(metodo) }}</mat-option>
+          }
+        </mat-select></mat-form-field
+      >
+    </div>
+    @if (form.controls.tipoPedido.value === 'MESA') {<app-mapa-mesas (seleccionar)="form.controls.mesaId.setValue($event)" />}
+  </section>
+  <section aria-labelledby="detalle">
+    <h2 id="detalle">Detalle del pedido</h2>
+    <p class="muted">
+      Precios y totales informativos. El servidor confirma los importes vigentes al guardar.
+    </p>
+    @if (lineasForm.hasError('sinDetalles')) {
+      <p class="error" role="alert">Agrega al menos un producto.</p>
+    }
+    @if (lineasForm.hasError('duplicados')) {
+      <p class="error" role="alert">
+        Cada presentación debe aparecer una sola vez. Ajusta su cantidad.
+      </p>
+    }
+    <div formArrayName="detalles">
+      @for (linea of lineasForm.controls; track linea; let i = $index) {
+        <div class="order-line" [formGroupName]="i">
+          <h3>Producto {{ i + 1 }}</h3>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="product-search"
+            ><mat-label>Buscar producto {{ i + 1 }}</mat-label
+            ><input
+              matInput
+              formControlName="busqueda"
+              [matAutocomplete]="opciones"
+              (input)="buscarProducto(i)"
+              autocomplete="off"
+            /><mat-autocomplete
+              #opciones="matAutocomplete"
+              (optionSelected)="seleccionarProducto(i, $event.option.value)"
+            >
+              @for (producto of opcionesPorLinea()[i]; track producto.id) {
+                <mat-option [disabled]="!producto.disponible" [value]="producto.id"
+                  >{{ producto.nombre }} · #{{ producto.id }} ·
+                  {{ producto.precio | currency: 'PEN' : 'S/ ' : '1.2-2' }}</mat-option
+                >
+              }
+            </mat-autocomplete>
+            <mat-hint
+              >Elige una opción; escribir el nombre no selecciona su ID.</mat-hint
+            ></mat-form-field
+          >
+          @if (linea.controls.productoId.touched && linea.controls.productoId.invalid) {
+            <p class="error selection-error">Selecciona un producto disponible.</p>
+          }
+          @if(presentacionesDe(linea.controls.productoId.value).length){<mat-form-field appearance="outline"><mat-label>Presentación</mat-label><mat-select formControlName="presentacionId"><mat-option [value]="0">Selecciona una presentación</mat-option>@for(pres of presentacionesDe(linea.controls.productoId.value);track pres.id){<mat-option [value]="pres.id">{{pres.nombre}} · {{pres.precio|currency:'PEN':'S/ ':'1.2-2'}}</mat-option>}</mat-select></mat-form-field>}
+          <mat-form-field appearance="outline" subscriptSizing="dynamic"
+            ><mat-label>Cantidad producto {{ i + 1 }}</mat-label
+            ><input
+              matInput
+              type="number"
+              formControlName="cantidad"
+              min="1"
+              max="2147483647"
+              step="1"
+            /><mat-error>Ingresa una cantidad entera mayor que cero.</mat-error></mat-form-field
+          >
+          <div class="line-amounts">
+            <span
+              >Precio informativo
+              <strong>{{ preciosUnitarios()[i] | currency: 'PEN' : 'S/ ' : '1.2-2' }}</strong></span
+            ><span
+              >Subtotal informativo
+              <strong>{{ subtotales()[i] | currency: 'PEN' : 'S/ ' : '1.2-2' }}</strong></span
+            >
+          </div>
+          <button
+            matButton
+            type="button"
+            [disabled]="lineasForm.length <= 1 || guardando() || confirmando()"
+            (click)="quitarLinea(i)"
+            [attr.aria-label]="'Quitar producto ' + (i + 1)"
+          >
+            Quitar
+          </button>
+        </div>
+      }
+    </div>
+    <button
+      matButton
+      type="button"
+      [disabled]="guardando() || confirmando()"
+      (click)="agregarLinea()"
+    >
+      Agregar producto
+    </button>
+    <p class="order-total" aria-live="polite">
+      Total informativo <strong>{{ total() | currency: 'PEN' : 'S/ ' : '1.2-2' }}</strong>
+    </p>
+  </section>
+  <div class="form-actions">
+    <button
+      matButton="filled"
+      type="submit"
+      [disabled]="
+        guardando() ||
+        confirmando() ||
+        !clientesCargados() ||
+        !productosCargados() ||
+        !clientes().length ||
+        !productos().length
+      "
+    >
+      {{ guardando() ? 'Guardando…' : 'Revisar y confirmar' }}</button
+    ><a matButton routerLink="/interno/pedidos">Volver al listado</a>
+  </div>
+</form>

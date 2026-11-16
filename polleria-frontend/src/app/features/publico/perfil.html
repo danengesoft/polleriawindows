@@ -1,0 +1,44 @@
+<p class="eyebrow">Tu cuenta en Polleria Neyos</p>
+<h1>Mi perfil</h1>
+<p>Tus datos de contacto para recibir y consultar tus pedidos.</p>
+@if (cargando()) {
+<p role="status">Consultando tu perfil…</p>
+}
+@if (!existe() && listo()) {
+<p>Completa tu perfil para continuar con tu pedido.</p>
+}
+@if (error()) {
+<p role="alert">{{ error() }}</p>
+@if (!listo()) {
+<button (click)="cargar()">Reintentar</button>
+}
+}
+<p role="status">{{ aviso() }}</p>
+@if (listo()) {
+<form [formGroup]="form" (ngSubmit)="guardar()" class="formulario ivory-panel">
+  <fieldset>
+    <legend>Datos de contacto</legend>
+    <label>Nombres<input formControlName="nombres" autocomplete="given-name" maxlength="100" /></label>
+    <label>Apellidos<input formControlName="apellidos" autocomplete="family-name" maxlength="100" /></label>
+    <label>Teléfono<input formControlName="telefono" type="tel" autocomplete="tel" maxlength="12" /></label>
+    <label>Correo (opcional)<input formControlName="correo" type="email" autocomplete="email" maxlength="254" /></label>
+  </fieldset>
+  <fieldset>
+    <legend>Dirección habitual</legend>
+    <label>Dirección principal (opcional)<input formControlName="direccionPrincipal" autocomplete="street-address"
+        maxlength="300" /></label>
+    <label>Referencia (opcional)<textarea formControlName="referencia" maxlength="300"></textarea>
+    </label>
+  </fieldset>
+  @if (form.invalid && form.touched) {
+  <p role="alert">
+    Revisa nombres, apellidos, teléfono y correo. El teléfono debe tener 7 a 9 dígitos, con +51
+    opcional.
+  </p>
+  }
+  <button type="submit" [disabled]="guardando()">
+    {{ guardando() ? 'Guardando…' : 'Guardar perfil' }}
+  </button>
+</form>
+}
+<a routerLink="/catalogo">Volver al catálogo</a>

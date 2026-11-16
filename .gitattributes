@@ -1,0 +1,12 @@
+# Mantener saltos de línea de Linux en todo el proyecto (los archivos se usan dentro
+# de contenedores Linux). Solo los .bat de Windows usan CRLF.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.tar binary
+*.jar binary

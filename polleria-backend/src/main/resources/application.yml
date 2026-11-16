@@ -1,0 +1,22 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 21MB
+  jackson:
+    deserialization:
+      accept-float-as-int: false
+  application:
+    name: polleria-backend
+  jpa:
+    open-in-view: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+polleria:
+  imagenes:
+    directorio: ${POLLERIA_IMAGENES_DIR:./var/imagenes-productos}
+    base-publica: ${PUBLIC_APP_URL:http://localhost:8080}

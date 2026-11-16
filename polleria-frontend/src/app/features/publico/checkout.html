@@ -1,0 +1,155 @@
+<a class="return-link" routerLink="/carrito"><app-icono-cliente nombre="volver" />Volver al carrito</a>
+<h1 #tituloPaso tabindex="-1" [class.checkout-sr-only]="paso()===1">{{paso()===1?'Información de
+    entrega':paso()===2?'Datos del comprador':paso()===3?'Método de pago':'Confirmar pedido'}}</h1>
+@if(paso()!==1){<p class="checkout-heading">{{paso()===1?'Selecciona cómo deseas recibir tu
+    pedido.':paso()===2?'Completa los datos necesarios para tu compra.':paso()===3?'Elige tu método preferido para este
+    pedido.':'Revisa que todo esté correcto antes de registrar tu compra.'}}</p>}
+@if(error()){<p role="alert">{{error()}}</p>}
+@if(!carrito.lineas().length){<div class="empty-state">
+    <h2>Tu carrito está vacío</h2><a class="action" routerLink="/catalogo">Elegir productos</a>
+</div>}
+@else{
+<div class="purchase-layout">
+    <form id="compra-form" [formGroup]="form" (ngSubmit)="paso()===4?confirmar():continuar()"
+        class="formulario purchase-panel">
+        <ol class="step-tabs" aria-label="Pasos del pedido">@for(etapa of [1,2,3,4];track etapa){<li
+                [class.active]="paso()===etapa" [class.completed]="paso()>etapa"
+                [attr.aria-current]="paso()===etapa?'step':null"><span>{{etapa}}.
+                    {{etapa===1?'Entrega':etapa===2?'Datos':etapa===3?'Método':'Resumen'}}</span><i
+                    aria-hidden="true">{{paso()>etapa?'✓':etapa}}</i></li>}</ol>
+        <fieldset [hidden]="paso()!==1">
+            <legend>Tipo de pedido</legend>
+            <p>Elige una modalidad. Si eliges mesa, selecciona una disponible en el plano.</p>
+            <div class="modality-options">
+                @for(tipo of ['MESA','PARA_LLEVAR'];track tipo){<label [class.selected]="modalidad()===tipo"><input
+                        type="radio" formControlName="tipoPedido" [value]="tipo" name="tipoPedido" /><app-icono-cliente
+                        [nombre]="iconoTipo(tipo)" /><span>{{nombreTipo(tipo)}}</span></label>}
+            </div>
+            @if(modalidad()==='MESA'){<app-mapa-mesas [publico]="true" [mesaSeleccionada]="mesaSeleccionada()"
+                (seleccionar)="form.controls.mesaId.setValue($event)" (seleccionInfo)="mesaInfo.set($event)" />
+            <p class="helper">La mesa se reserva al confirmar el pedido. El mesero confirma tu llegada y la libera
+                cuando te retiras.</p>}
+
+            @else if(modalidad()==='PARA_LLEVAR'){<div class="purchase-notice">Te esperamos en el establecimiento para
+                recoger tu pedido.</div>}
+
+        </fieldset>
+        <fieldset [hidden]="paso()!==2">
+            <legend>Datos del comprador</legend>
+            <p>No necesitas una cuenta ni contraseña para comprar.</p>
+            <div class="field-grid"><label>Nombres<input formControlName="nombres" autocomplete="given-name"
+                        maxlength="100" required /></label><label>Apellidos<input formControlName="apellidos"
+                        autocomplete="family-name" maxlength="100" required /></label></div>
+            <label>Teléfono<input formControlName="telefono" type="tel" autocomplete="tel" maxlength="12"
+                    required /></label><label>Correo de contacto (opcional)<input formControlName="correo" type="email"
+                    autocomplete="email" maxlength="254" /></label>
+            @if(perfilCargado()){<p class="helper">Reutilizamos tu perfil. Los cambios aquí solo se aplican a este
+                pedido.</p>}
+
+        </fieldset>
+        <fieldset [hidden]="paso()!==3">
+            <legend>Elige tu método de pago</legend>
+            <p>Selecciona cómo deseas pagar. Podrás revisar todo antes de confirmar el pedido.</p>
+            <div class="method-list">
+                @for(m of metodos;track m){<label class="method-option" [class.selected]="metodo()===m"><input
+                        type="radio" formControlName="metodoPago" name="metodoPago" [value]="m" /><span
+                        aria-hidden="true" class="payment-badge" [class.yape]="m==='YAPE'"
+                        [class.plin]="m==='PLIN'">
+                        @if (m === 'TARJETA') {
+                            <app-icono-cliente nombre="tarjeta" />
+                        } @else if (m === 'EFECTIVO') {
+                            <app-icono-cliente nombre="efectivo" />
+                        } @else {
+                            {{m === 'YAPE' ? 'Yape' : 'Plin'}}
+                        }</span><span
+                        class="method-copy"><strong>{{m==='TARJETA'?'Tarjeta':m==='EFECTIVO'?'Efectivo':m==='YAPE'?'Yape':'Plin'}}</strong><small>{{m==='EFECTIVO'?'El
+                            personal de caja confirmará el cobro.':'El pago requiere confirmación
+                            autorizada.'}}</small></span>@if(metodo()===m){<span class="selected-copy">✓
+                        Seleccionado</span>}</label>}
+            </div>
+            <div class="purchase-notice"><strong>Tu pago todavía no se realizará.</strong>
+                <p>Al continuar solo revisarás tu pedido. Seleccionar un método no realiza un cobro. No ingreses datos
+                    bancarios en este formulario.</p>
+            </div>
+
+        </fieldset>
+        <fieldset [hidden]="paso()!==4">
+            <legend>Revisa los datos antes de confirmar</legend>
+            <p>Aún no hemos registrado el pedido. Puedes editar cualquier dato.</p>
+            <div class="review-grid">
+                <section class="review-card">
+                    <div class="review-title"><span>Información de entrega</span><button type="button" class="text-link"
+                            (click)="volverPaso(1)">Editar entrega</button></div>
+                    <strong>{{nombreTipo(modalidad())}}@if(mesaInfo();as m){ · Mesa
+                        {{m.numero}}}</strong>@if(modalidad()==='MESA'){<p>La disponibilidad se verificará nuevamente al
+                        confirmar.</p>}
+                </section>
+                <section class="review-card">
+                    <div class="review-title"><span>Datos del comprador</span><button type="button" class="text-link"
+                            (click)="volverPaso(2)">Editar datos</button></div><strong>{{form.controls.nombres.value}}
+                        {{form.controls.apellidos.value}}</strong>
+                    <p>{{form.controls.telefono.value}}</p>@if(form.controls.correo.value){<p>
+                        {{form.controls.correo.value}}</p>}
+                </section>
+                <section class="review-card review-payment">
+                    <div class="review-title"><span>Método seleccionado</span><button type="button" class="text-link"
+                            (click)="volverPaso(3)">Editar método</button></div><strong>{{metodo()}}</strong><span
+                        class="pending-label">Pago pendiente</span>
+                    <p>Seleccionar el método no realiza un cobro. La confirmación del pago es independiente del estado
+                        del pedido.</p>
+                </section>
+            </div>
+            <h2>Productos del pedido</h2>
+            <div class="purchase-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>@for(l of carrito.lineas();track
+                        l.productoId+':'+(l.presentacionId||'')+':'+(l.promocionId||'')){<tr>
+                            <td>{{l.nombre}} @if(l.nombrePresentacion&&l.nombrePresentacion!=='Única'){ ·
+                                {{l.nombrePresentacion}}}<small>{{l.promocionId?'Con promoción':'Precio
+                                    regular'}}</small></td>
+                            <td>{{l.cantidad}}</td>
+                            <td>{{l.precio|currency:'PEN':'S/ ':'1.2-2'}}</td>
+                            <td>{{l.precio*l.cantidad|currency:'PEN':'S/ ':'1.2-2'}}</td>
+                        </tr>}</tbody>
+                </table>
+            </div>
+            <div class="order-total"><span>Total estimado</span><strong>{{carrito.total()|currency:'PEN':'S/
+                    ':'1.2-2'}}</strong></div>
+            <p class="helper">El servidor verificará disponibilidad y precios.</p>
+        </fieldset>
+    </form>
+    <aside class="purchase-aside">
+        <section class="purchase-panel">
+            <div class="aside-title">
+                <h2>Tu pedido</h2><a routerLink="/carrito">Editar carrito ›</a>
+            </div>@for(l of carrito.lineas();track l.productoId+':'+(l.presentacionId||'')+':'+(l.promocionId||'')){<div
+                class="aside-product"><span class="product-initial" aria-hidden="true">{{l.nombre.charAt(0)}}</span>
+                <div><strong>{{l.nombre}} @if(l.nombrePresentacion&&l.nombrePresentacion!=='Única'){ ·
+                        {{l.nombrePresentacion}}}<small>{{l.promocionId?'Con promoción':'Precio
+                            regular'}}</small></strong><small>{{l.cantidad}} × {{l.precio|currency:'PEN':'S/
+                        ':'1.2-2'}}</small></div><b>{{l.precio*l.cantidad|currency:'PEN':'S/ ':'1.2-2'}}</b>
+            </div>}<div class="order-total"><span>Subtotal estimado</span><strong>{{carrito.total()|currency:'PEN':'S/
+                    ':'1.2-2'}}</strong></div>
+            <p class="helper">El importe definitivo se confirma al registrar el pedido.</p>@if(paso()===1){<button
+                type="button" class="full-width" (click)="continuar()">Continuar con mis datos <app-icono-cliente
+                    nombre="flecha" /></button>}
+        </section>
+    </aside>
+</div>
+@if(paso()>1){<div class="checkout-actionbar" aria-label="Continuar el pedido">
+    @if(paso()>1){<button type="button" class="secondary" (click)="volverPaso(paso()===4?3:paso()===3?2:1)"
+        [disabled]="guardando()">Volver</button>}
+    @if(paso()===4){<button type="submit" form="compra-form" [disabled]="guardando()">{{guardando()?'Creando
+        pedido…':'Confirmar pedido'}} <app-icono-cliente nombre="flecha" /></button>}
+    @else{<button type="button" (click)="continuar()">{{paso()===1?'Continuar con mis datos':paso()===2?'Continuar al
+        método de pago':'Revisar pedido'}} <app-icono-cliente nombre="flecha" /></button>}
+</div>}
+}

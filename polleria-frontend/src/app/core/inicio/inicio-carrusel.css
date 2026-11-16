@@ -1,0 +1,123 @@
+.premium-hero {
+    display: block;
+    min-height: 0;
+    background: none;
+    max-width: 1320px;
+    margin: 20px auto 0;
+    border-radius: 14px;
+    overflow: hidden;
+    width: calc(100% - 48px)
+}
+
+.premium-hero:before {
+    display: none
+}
+
+.hero-content {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44%;
+    padding: 28px 45px;
+    pointer-events: none
+}
+
+.hero-content h1 {
+    font-size: clamp(2rem, 3.6vw, 3.4rem)
+}
+
+.hero-content .eyebrow {
+    font-size: .6rem
+}
+
+.hero-description {
+    font-size: .85rem
+}
+
+.hero-actions {
+    pointer-events: auto;
+    flex-wrap: wrap;
+    gap: 10px
+}
+
+.hero-actions .action {
+    min-width: 130px
+}
+
+.premium-sections {
+    max-width: 1368px;
+    margin: auto;
+    width: 100%;
+    padding-inline: 24px
+}
+
+@media(max-width:1000px) {
+    .hero-content {
+        padding: 18px 28px
+    }
+
+    .hero-description {
+        display: none
+    }
+
+    .hero-actions .action {
+        min-width: 110px
+    }
+
+    .hero-content h1 {
+        font-size: 2.2rem
+    }
+}
+
+@media(max-width:700px) {
+    .premium-hero {
+        margin: 12px auto 0;
+        width: calc(100% - 24px);
+        overflow: visible
+    }
+
+    .hero-content {
+        position: static;
+        transform: none;
+        width: 100%;
+        padding: 20px 16px 16px;
+        text-align: center;
+        pointer-events: auto
+    }
+
+    .hero-content h1 {
+        font-size: 1.65rem;
+        max-width: none;
+        margin-bottom: 12px
+    }
+
+    .hero-content h1 span {
+        display: inline;
+        color: #d7b67e
+    }
+
+    .hero-content h1 br {
+        display: none
+    }
+
+    .hero-content .eyebrow,
+    .gold-rule {
+        display: none
+    }
+
+    .hero-description {
+        display: block;
+        font-size: .8rem;
+        max-width: 340px;
+        margin: auto
+    }
+
+    .hero-actions {
+        margin-top: 16px
+    }
+
+    .premium-sections {
+        padding: 24px 16px 36px
+    }
+}

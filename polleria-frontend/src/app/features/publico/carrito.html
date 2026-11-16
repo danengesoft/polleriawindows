@@ -1,0 +1,55 @@
+<a class="return-link" routerLink="/catalogo"><app-icono-cliente nombre="volver" />Seguir eligiendo</a>
+<p class="eyebrow">Tu selección</p>
+<h1>Tu carrito</h1>
+<p>Revisa tus productos antes de continuar.</p>
+@if (carrito.lineas().length) {
+<section class="ivory-panel" aria-label="Productos de tu carrito">
+  @for (l of carrito.lineas(); track l.productoId+':'+(l.presentacionId||'')+':'+(l.promocionId||'')) {
+  <article class="linea cart-line">
+    <app-foto-producto [url]="foto(l.productoId)" [nombre]="l.nombre" />
+    <div>
+      <h2>{{ l.nombre }} @if(l.nombrePresentacion&&l.nombrePresentacion!=='Única'){ · {{l.nombrePresentacion}}}</h2>
+      <p>{{l.promocionId?'Con promoción':'Precio regular'}}</p>@if(l.promocionId){<p>Antes
+        <s>{{l.precioRegular|currency:'PEN':'S/ ':'1.2-2'}}</s></p>}
+      <p>{{ l.precio | currency: 'PEN' : 'S/ ' : '1.2-2' }} por unidad</p>
+    </div>
+    <div class="cart-controls">
+      <div class="cantidad">
+        <button type="button" class="secondary" [disabled]="l.cantidad === 1"
+          (click)="carrito.cantidad(l.productoId, l.cantidad - 1,l.promocionId,l.presentacionId)"
+          [attr.aria-label]="'Disminuir ' + l.nombre">
+          −</button><label>Cantidad<input type="number" min="1" max="999" step="1" [value]="l.cantidad"
+            [attr.aria-label]="'Cantidad de ' + l.nombre"
+            (change)="carrito.cantidad(l.productoId, +$any($event.target).value,l.promocionId,l.presentacionId)" /></label><button
+          type="button" class="secondary" [disabled]="l.cantidad === 999"
+          (click)="carrito.cantidad(l.productoId, l.cantidad + 1,l.promocionId,l.presentacionId)"
+          [attr.aria-label]="'Aumentar ' + l.nombre">
+          +</button><button type="button" class="quiet"
+          (click)="carrito.eliminar(l.productoId,l.promocionId,l.presentacionId)"
+          [attr.aria-label]="'Quitar ' + l.nombre">
+          <app-icono-cliente nombre="borrar" />
+        </button>
+      </div>
+      <strong>{{ l.precio * l.cantidad | currency: 'PEN' : 'S/ ' : '1.2-2' }}</strong>
+    </div>
+  </article>
+  }
+  <div class="cart-total">
+    <div class="summary-row">
+      <span>Subtotal</span><span>{{ carrito.total() | currency: 'PEN' : 'S/ ' : '1.2-2' }}</span>
+    </div>
+    <div class="summary-row total">
+      <span>Total estimado</span><span>{{ carrito.total() | currency: 'PEN' : 'S/ ' : '1.2-2' }}</span>
+    </div>
+  </div>
+  <p class="helper">La disponibilidad y el precio se confirman al crear el pedido.</p>
+  <a class="action full-width" routerLink="/checkout">Continuar con el pedido <app-icono-cliente
+      nombre="flecha" /></a><button type="button" class="text-link" (click)="confirmarVaciado()">Vaciar carrito</button>
+</section>
+} @else {
+<div class="empty-state">
+  <h2>Tu mesa está por servirse</h2>
+  <p>Tu carrito está vacío. Encuentra tu próximo favorito en nuestra carta.</p>
+  <a class="action" routerLink="/catalogo">Ver catálogo</a>
+</div>
+}

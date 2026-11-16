@@ -1,0 +1,22 @@
+name: polleria-dev
+services:
+  oracle:
+    image: gvenzl/oracle-free:23-slim
+    container_name: polleria-oracle
+    ports:
+      - "127.0.0.1:1522:1521"
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:?Set ORACLE_PASSWORD in .env}
+      APP_USER: POLLERIA
+      APP_USER_PASSWORD: ${ORACLE_APP_PASSWORD:?Set ORACLE_APP_PASSWORD in .env}
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+      start_period: 60s
+volumes:
+  oracle-data:
+    name: polleria-oracle-data

@@ -1,0 +1,114 @@
+@media(max-width:1000px) {
+    .purchase-layout {
+        grid-template-columns: minmax(0, 1fr)
+    }
+
+    .purchase-aside {
+        position: static;
+        grid-template-columns: 1fr 1fr
+    }
+}
+
+@media(max-width:600px) {
+    .purchase-layout .purchase-panel {
+        padding: 16px
+    }
+
+    .purchase-aside {
+        grid-template-columns: 1fr
+    }
+
+    .review-grid {
+        grid-template-columns: 1fr
+    }
+
+    .selected-copy {
+        display: none
+    }
+
+    .modality-options {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 6px !important
+    }
+
+    .modality-options label {
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px 4px !important;
+        font-size: .72rem !important
+    }
+
+    .step-tabs {
+        gap: 6px !important
+    }
+
+    .step-tabs li {
+        font-size: .65rem !important
+    }
+
+    .step-tabs i {
+        display: none
+    }
+}
+
+:host {
+    display: block;
+    padding-bottom: 110px
+}
+
+.checkout-sr-only {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0
+}
+
+.checkout-actionbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 45;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 14px clamp(16px, 3vw, 60px);
+    background: #1c1f22;
+    border-top: 1px solid #42474d;
+    box-shadow: 0 -4px 20px #0005
+}
+
+.checkout-actionbar button {
+    min-height: 46px
+}
+
+.checkout-actionbar button:last-child {
+    min-width: 260px
+}
+
+@media(max-width:600px) {
+    :host {
+        padding-bottom: 170px
+    }
+
+    .checkout-actionbar {
+        bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+        padding: 10px 14px;
+        gap: 8px
+    }
+
+    .checkout-actionbar button:last-child {
+        min-width: 0;
+        flex: 1
+    }
+
+    .checkout-actionbar button {
+        font-size: .8rem !important;
+        padding: 12px !important
+    }
+}

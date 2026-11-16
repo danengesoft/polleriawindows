@@ -1,0 +1,76 @@
+<h1>{{ id() === null ? 'Nuevo producto' : 'Editar producto' }}</h1>
+@if (loading()) {
+  <p role="status">Cargando producto…</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+}
+@if (!categoriasCargadas() && !errorCategorias() && !errorCarga()) {
+  <p role="status">Cargando categorías…</p>
+}
+@if (errorCategorias()) {
+  <p class="error" role="alert">{{ errorCategorias() }}</p>
+  <button matButton (click)="cargarCategorias()">Reintentar categorías</button>
+}
+@if (categoriasCargadas() && !categorias().length) {
+  <p class="notice">
+    No hay categorías disponibles. <a routerLink="/interno/categorias/nuevo">Crear categoría</a>
+  </p>
+}
+
+@if (!loading() && !errorCarga()) {
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="resource-form">
+    <mat-form-field appearance="outline"
+      ><mat-label>Nombre</mat-label
+      ><input matInput type="text" required formControlName="nombre" maxlength="120" /><mat-error>{{
+        validacion(form.controls.nombre)
+      }}</mat-error></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>Descripción</mat-label
+      ><textarea matInput formControlName="descripcion" rows="3" maxlength="500"></textarea
+      ><mat-error>{{ validacion(form.controls.descripcion) }}</mat-error></mat-form-field
+    >
+    @if(!presentaciones().length){    <mat-form-field appearance="outline"
+      ><mat-label>Precio (S/)</mat-label
+      ><input matInput type="text" inputmode="decimal" formControlName="precio" /><mat-error>{{
+        validacion(form.controls.precio)
+      }}</mat-error></mat-form-field
+    >
+}
+    <section class="presentaciones-editor" style="grid-column:1/-1"><h2>Presentaciones</h2><p>Un solo plato con porciones o tamaños y precios propios. Ejemplos: Entero, 1/2, 1/4, 1/8; Personal, Mediana, Familiar. Usa Única para platos sin tamaños.</p>@for(p of presentaciones();track $index;let i=$index){<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:12px 0"><label>Presentación<input [value]="p.nombre" maxlength="60" (input)="cambiarPresentacion(i,'nombre',$any($event.target).value)" [disabled]="guardando()"/></label><label>Precio (S/)<input type="number" min="0.01" step="0.01" [value]="p.precio" (input)="cambiarPresentacion(i,'precio',+$any($event.target).value)" [disabled]="guardando()"/></label><label><input type="checkbox" [checked]="p.disponible" (change)="cambiarPresentacion(i,'disponible',$any($event.target).checked)" [disabled]="guardando()"/> Disponible</label><button type="button" class="secondary" [disabled]="guardando()||presentaciones().length===1" (click)="quitarPresentacion(i)">Quitar presentación</button></div>}<button type="button" [disabled]="guardando()||presentaciones().length>=20" (click)="agregarPresentacion()">Añadir presentación</button></section>
+    <mat-form-field appearance="outline"
+      ><mat-label>Categoría</mat-label
+      ><mat-select formControlName="categoriaId"
+        ><mat-option [value]="0" disabled>Selecciona una categoría</mat-option>
+        @for (categoria of categorias(); track categoria.id) {
+          <mat-option [value]="categoria.id"
+            >{{ categoria.nombre }}{{ categoria.activo ? '' : ' (inactiva)' }}</mat-option
+          >
+        }</mat-select
+      ><mat-error>{{ validacion(form.controls.categoriaId) }}</mat-error></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>URL de imagen</mat-label
+      ><input matInput type="url" formControlName="imagenUrl" maxlength="1000" /><mat-error>{{
+        validacion(form.controls.imagenUrl)
+      }}</mat-error></mat-form-field
+    >
+    <section class="imagen-editor"><h2>Fotografía del plato</h2><p>JPG o PNG, hasta 20 MB. La imagen se optimiza para la carta.</p>
+    @if(form.controls.imagenUrl.value){<img class="imagen-preview" [src]="form.controls.imagenUrl.value" alt="Vista previa de la imagen del plato" (error)="$any($event.target).hidden=true" />}
+    <label class="file-label">Cargar imagen<input type="file" accept="image/jpeg,image/png" [disabled]="subiendoImagen()||guardando()" (change)="cargarImagen($event)" /></label>
+    <p role="status">{{subiendoImagen()?'Cargando imagen…':avisoImagen()}}</p></section>
+    <mat-checkbox formControlName="disponible">Disponible</mat-checkbox>
+    <div class="form-actions">
+      <button
+        matButton="filled"
+        type="submit"
+        [disabled]="guardando() || subiendoImagen() || !categoriasCargadas() || !categorias().length"
+      >
+        {{ guardando() ? 'Guardando…' : 'Guardar' }}</button
+      ><a matButton routerLink="/interno/productos">Cancelar</a>
+    </div>
+  </form>
+} @else {
+  <a matButton routerLink="/interno/productos">Volver al listado</a>
+}

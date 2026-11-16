@@ -1,0 +1,20 @@
+# Desarrollo local en el mismo origen: API y autenticación conservan sus rutas.
+services:
+  frontend-dev:
+    build:
+      context: ./polleria-frontend
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    volumes:
+      - ./polleria-frontend/src:/app/src:ro
+      - ./polleria-frontend/public:/app/public:ro
+      - ./polleria-frontend/angular.json:/app/angular.json:ro
+      - ./polleria-frontend/tsconfig.json:/app/tsconfig.json:ro
+      - ./polleria-frontend/tsconfig.app.json:/app/tsconfig.app.json:ro
+    networks: [internal]
+  frontend:
+    volumes: !override
+      - ./production/nginx/http.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./production/nginx/00-logging.conf:/etc/nginx/conf.d/00-logging.conf:ro
+      - ./production/nginx/locations.dev.conf:/etc/nginx/polleria/locations.conf:ro
+      - ./production/nginx/security-headers.conf:/etc/nginx/polleria/security-headers.conf:ro

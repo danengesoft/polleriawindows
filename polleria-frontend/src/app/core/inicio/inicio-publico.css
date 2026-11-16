@@ -1,0 +1,36 @@
+:host {
+  display: block;
+}
+.premium-sections {
+  max-width: 1100px;
+  padding: 38px 28px 58px;
+  margin: auto;
+}
+.premium-sections section + section {
+  margin-top: 36px;
+}
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.section-heading h2 {
+  font-size: 2rem;
+  margin: 0;
+}
+.view-all {
+  color: #c8a56b;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  text-underline-offset: 4px;
+}
+.catalog-message {
+  padding: 20px;
+  border: 1px solid #50412b;
+  border-radius: 10px;
+  color: #d1c5b2;
+  font-size: 0.9rem;
+}
+.premium-sections{max-width:none;width:100%;padding-inline:clamp(16px,4vw,76px)}

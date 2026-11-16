@@ -1,0 +1,53 @@
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<header class="site-header">
+  <div class="container header-row">
+    <a class="brand" routerLink="/interno">Polleria Neyos · Restaurant Pollos y Parrillas</a>
+    <div class="session-row">
+      <button type="button" class="secondary portal-toggle" #portalButton [attr.aria-expanded]="menuAbierto()"
+        aria-controls="portal-menu" (click)="menuAbierto.set(!menuAbierto())">
+        Menú
+      </button>
+      <app-navigation [interno]="true" />
+    </div>
+  </div>
+</header>
+<div class="container internal-body">
+  <aside (keydown.escape)="cerrarMenu(portalButton)">
+
+    <p class="eyebrow">Portal interno</p>
+    <nav id="portal-menu" aria-label="Navegación del portal" [class.abierto]="menuAbierto()"
+      (click)="menuAbierto.set(false)">
+      @if(auth.tieneRol('CAJERO') && !auth.tieneRol('ADMINISTRADOR')){<a routerLink="/interno/caja"
+        routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+        ariaCurrentWhenActive="page"><app-icono-portal nombre="caja" />Mi caja</a><a routerLink="/interno/caja"
+        [queryParams]="{vista:'pendientes'}" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+        ariaCurrentWhenActive="page"><app-icono-portal nombre="caja" />Pedidos pendientes</a><a
+        routerLink="/interno/caja" [queryParams]="{vista:'entregados'}" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact:true}" ariaCurrentWhenActive="page"><app-icono-portal nombre="caja" />Pedidos
+        entregados</a>}
+      @if(auth.tieneRol('OPERACIONES','ADMINISTRADOR')){<a routerLink="/interno/operaciones"
+        routerLinkActive="active"><app-icono-portal nombre="cocina" />Operaciones</a>}
+      @if(auth.tieneRol('MESERO','ADMINISTRADOR')){<a routerLink="/interno/mesero"
+        routerLinkActive="active"><app-icono-portal nombre="mesa" />Mesero</a>}
+      @if (auth.tieneRol('ADMINISTRADOR')) {
+      <span class="nav-section">Gestión</span>
+      <a routerLink="/interno/portada" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="producto" />Local y página de inicio</a>
+      <a routerLink="/interno/categorias" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="categoria" />Categorías</a>
+      <a routerLink="/interno/productos" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="producto" />Productos</a>
+      <a routerLink="/interno/clientes" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="cliente" />Clientes</a>
+      <a routerLink="/interno/pedidos" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="pedido" />Pedidos</a>
+      }
+      @if (auth.tieneRol('ADMINISTRADOR')) {
+      <a routerLink="/interno/reportes" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="reporte" />Reportes</a>
+      }
+
+    </nav>
+  </aside>
+  <main id="contenido" tabindex="-1"><router-outlet /></main>
+</div>

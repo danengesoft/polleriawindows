@@ -1,0 +1,136 @@
+<app-cliente-shell [amplio]="true">
+  @if (!seccion) {
+  <section class="premium-hero" aria-labelledby="hero-titulo">
+    <app-banner-inicio />
+    <div class="hero-content">
+      <p class="eyebrow">POLLOS y PARRILLAS</p>
+      <h1 id="hero-titulo">
+        EL SABOR <span>IMPONE<br /> PRESENCIA</span>
+      </h1>
+      <span class="gold-rule" aria-hidden="true"></span>
+      <p class="hero-description">
+        Pollos y parrillas con una<br class="desktop-break" />
+        experiencia única, elegante,<br class="desktop-break" />
+        intensa y memorable.
+      </p>
+      <div class="hero-actions">
+
+      </div>
+    </div>
+  </section>
+  }
+  <div class="premium-sections">
+    @if (seccion) {<a class="view-all" routerLink="/inicio">← Volver al inicio</a>}
+    @if (!seccion || seccion === 'destacados') {
+    <section aria-labelledby="destacados-titulo" [attr.aria-busy]="cargandoProductos() || cargandoCategorias()">
+      <div class="section-heading">
+        @if (seccion) {<h1 id="destacados-titulo">Destacados de la carta</h1>} @else {<h2 id="destacados-titulo">Destacados de la carta</h2>}
+        @if (!seccion) {<a class="view-all" routerLink="/destacados">Ver todos <span aria-hidden="true">→</span></a>}
+      </div>
+      @if (errorProductos()) {
+      <div class="catalog-message" role="alert">
+        <p>No pudimos cargar los productos. Inténtalo nuevamente.</p>
+        <button class="action secondary" (click)="cargarProductos()">Reintentar productos</button>
+      </div>
+      } @else if (cargandoProductos() || cargandoCategorias()) {
+      <p class="catalog-message" role="status">Preparando nuestra carta…</p>
+      } @else {
+      <div class="featured-grid">
+        @for (p of destacados(); track p.id) {
+        <article class="featured-card">
+          <button type="button" (click)="verDetalle(p)" [attr.aria-label]="'Ver detalle de ' + p.nombre"
+            class="product-photo">
+            @if (imagen(p.imagenUrl); as foto) {
+            <img [src]="foto" [alt]="p.nombre" loading="lazy" referrerpolicy="no-referrer"
+              (error)="imagenFallida(p.imagenUrl)" />
+            } @else {
+            <span class="photo-missing">Imagen no disponible</span>
+            }
+          </button>
+          <div class="product-copy">
+            <h3><button type="button" class="product-title" (click)="verDetalle(p)">{{ p.nombre }}</button></h3>
+            <p>{{ p.descripcion }}</p>
+            <strong class="product-price">@if((p.presentaciones?.length||0)>1){Desde }{{
+              p.precio | currency: 'PEN' : 'S/ ' : '1.2-2'
+              }}</strong>
+          </div>
+        </article>
+        } @empty {
+        @if (!errorCategorias()) {
+        <p class="catalog-message">
+          Pronto encontrarás productos disponibles en nuestra carta.
+        </p>
+        }
+        }
+      </div>
+      }
+    </section>
+    }
+    @if (!seccion || seccion === 'promociones') {
+    <section aria-labelledby="promociones-titulo" class="promociones-section">
+      <div class="section-heading">
+        @if (seccion) {<h1 id="promociones-titulo">Promociones</h1>} @else {<h2 id="promociones-titulo">Promociones</h2><a class="view-all" routerLink="/promociones">Ver todas <span aria-hidden="true">→</span></a>}
+      </div>
+      @if(errorPromociones()){<div class="catalog-message" role="alert">
+        <p>No pudimos cargar las promociones.</p><button class="action secondary"
+          (click)="cargarPromociones()">Reintentar promociones</button>
+      </div>}
+      @else if(cargandoProductos()||cargandoCategorias()){<p class="catalog-message" role="status">Cargando promociones…
+      </p>}
+      @else{<div class="featured-grid">@for(p of promociones();track p.id){<article
+          class="featured-card promocion-card"><button type="button" class="product-photo" (click)="verDetalle(p,true)"
+            [attr.aria-label]="'Ver promoción '+p.nombre">@if(imagen(p.imagenUrl);as foto){<img [src]="foto"
+              [alt]="p.nombre" loading="lazy" referrerpolicy="no-referrer"
+              (error)="imagenFallida(p.imagenUrl)" />}@else{<span class="photo-missing">Imagen no
+              disponible</span>}</button>
+          <div class="product-copy"><span class="promo-label">Promoción @if(oferta(p.id);as o){ ·
+              -{{o.porcentaje}}%}</span>
+            <h3><button type="button" class="product-title" (click)="verDetalle(p,true)">{{p.nombre}}</button></h3>
+            @if(nombrePresentacionOferta(p)){<p>{{nombrePresentacionOferta(p)}}</p>}<p>{{p.descripcion}}</p>
+            @if(oferta(p.id);as o){<p>Antes <s>{{o.precioRegular|currency:'PEN':'S/ ':'1.2-2'}}</s></p><strong
+              class="product-price">Ahora {{o.precioPromocional|currency:'PEN':'S/ ':'1.2-2'}}</strong><button
+              type="button" (click)="agregarOferta(p)">Producto en promoción</button>}@else{<strong
+              class="product-price">{{p.precio|currency:'PEN':'S/ ':'1.2-2'}}</strong>}<button type="button"
+              class="product-title" (click)="verDetalle(p)">Ver a precio regular →</button>
+          </div>
+        </article>}@empty{<p class="catalog-message">No hay promociones disponibles por el momento.</p>}</div>}
+    </section>
+    }
+    @if (!seccion) {
+    <section aria-labelledby="categorias-titulo" [attr.aria-busy]="cargandoCategorias()">
+      <div class="section-heading">
+        <h2 id="categorias-titulo">Explora nuestra carta</h2>
+        <a class="view-all" routerLink="/catalogo">Ver todas <span aria-hidden="true">→</span></a>
+      </div>
+      @if (errorCategorias()) {
+      <div class="catalog-message" role="alert">
+        <p>No pudimos cargar las categorías.</p>
+        <button class="action secondary" (click)="cargarCategorias()">
+          Reintentar categorías
+        </button>
+      </div>
+      } @else if (cargandoCategorias()) {
+      <p class="catalog-message" role="status">Cargando categorías…</p>
+      } @else {
+      <div class="category-grid">
+        @for (c of categorias(); track c.id) {
+        <a class="category-card" routerLink="/catalogo" [queryParams]="{ categoria: c.id }">
+          <div class="category-photo">
+            @if (imagenCategoria(c.id); as foto) {
+            <img [src]="foto" [alt]="c.nombre" loading="lazy" referrerpolicy="no-referrer"
+              (error)="imagenFallida(foto)" />
+            } @else {
+            <span class="category-initial" aria-hidden="true">{{ c.nombre.charAt(0) }}</span>
+            }
+          </div>
+          <h3>{{ c.nombre }}</h3>
+        </a>
+        } @empty {
+        <p class="catalog-message">No hay categorías disponibles por el momento.</p>
+        }
+      </div>
+      }
+    </section>
+    }
+  </div>
+</app-cliente-shell>

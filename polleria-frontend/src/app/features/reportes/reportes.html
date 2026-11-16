@@ -1,0 +1,106 @@
+<header class="report-header"><div><h1>Reportes</h1>
+<p>
+  Selecciona el reporte que deseas consultar. Las ventas efectivas son pedidos ENTREGADO y PAGADO.
+</p></div>
+@if(seccion()!==-1){<form (ngSubmit)="aplicar()" class="filtros">
+  <label
+    >Desde<input
+      type="date"
+      name="desde"
+      [(ngModel)]="fechaDesde"
+      min="0001-01-01"
+      max="9998-12-31"
+  /></label>
+  <label
+    >Hasta<input
+      type="date"
+      name="hasta"
+      [(ngModel)]="fechaHasta"
+      min="0001-01-01"
+      max="9998-12-31"
+  /></label>
+  <label
+    >Top productos y clientes<input
+      type="number"
+      name="top"
+      [(ngModel)]="top"
+      min="1"
+      max="100"
+      required
+  /></label>
+  <button type="submit">Aplicar filtros</button>
+</form>}</header>
+@if(seccion()===-1){<label class="report-search">Buscar reporte<input name="buscarReporte" [(ngModel)]="busqueda" placeholder="Ventas por día, pagos, productos, clientes…"/></label><div class="report-sections">@for(item of secciones;track $index){@if(coincide(item.nombre+' '+item.detalle)){<button type="button" class="report-section-card" (click)="seccion.set($index)"><strong>{{item.nombre}}</strong><span>{{item.detalle}}</span><span>Ver reporte →</span></button>}}</div>}@else{<button type="button" class="secondary" (click)="seccion.set(-1)">← Todos los reportes</button><h2>{{secciones[seccion()].nombre}}</h2><p role="status">Rango aplicado: {{rangoAplicado()}}</p>}
+@if(errorFiltro()){<p role="alert">{{errorFiltro()}}</p>}
+
+@if(seccion()===0){<section class="report-detail">
+<app-reporte-tabla
+  titulo="Resumen de ventas"
+  [datos]="ventas()"
+  [columnas]="[
+    { nombre: 'Concepto' },
+    { nombre: 'Ventas efectivas' },
+    { nombre: 'Total vendido', formato: 'moneda' },
+    { nombre: 'Ticket promedio', formato: 'moneda' },
+  ]"
+  nota=""
+/></section>}
+
+@if(seccion()===1){<section class="report-detail"><section class="operation-board"><h2>Ventas por día</h2>@if(dias().filas.length){<svg viewBox="0 0 500 200" role="img" aria-label="Evolución de importes de ventas registrados">@for(y of [25,75,125,175];track y){<path [attr.d]="'M45 '+y+' H485'" fill="none" stroke="var(--line)" stroke-width=".6"/>}<path [attr.d]="'M'+puntosVenta().replaceAll(' ', ' L')+' L480 175 L20 175 Z'" fill="#c5203522"/><polyline [attr.points]="puntosVenta()" fill="none" stroke="var(--accent)" stroke-width="3"/>@for(punto of puntosVenta().split(' ');track $index){<circle [attr.cx]="punto.split(',')[0]" [attr.cy]="punto.split(',')[1]" r="4" fill="#eb4b60" stroke="#24282c" stroke-width="2"/>}</svg><div class="chart-dates"><span>{{dias().filas[0][0]}}</span><span>{{dias().filas[dias().filas.length-1][0]}}</span></div><p>Importes por fecha, en el orden de la tabla de ventas diarias.</p>}@else{<p>No hay ventas registradas en este rango.</p>}</section>
+<app-reporte-tabla
+  titulo="Ventas por día"
+  [datos]="dias()"
+  [columnas]="[{ nombre: 'Fecha' }, { nombre: 'Ventas' }, { nombre: 'Importe', formato: 'moneda' }]"
+  nota=""
+/></section>}
+
+@if(seccion()===2){<section class="report-detail">
+<app-reporte-tabla
+  titulo="Métodos de pago"
+  [datos]="pagos()"
+  [columnas]="[
+    { nombre: 'Método' },
+    { nombre: 'Ventas' },
+    { nombre: 'Importe', formato: 'moneda' },
+  ]"
+  nota=""
+/></section>}
+
+@if(seccion()===3){<section class="report-detail">
+<app-reporte-tabla
+  titulo="Productos más vendidos"
+  [datos]="productos()"
+  [columnas]="[
+    { nombre: 'Posición' },
+    { nombre: 'Producto histórico' },
+    { nombre: 'Cantidad' },
+    { nombre: 'Importe histórico', formato: 'moneda' },
+  ]"
+  nota="Nombre mínimo alfabético histórico por producto; no utiliza el precio actual del Catálogo."
+/></section>}
+
+@if(seccion()===4){<section class="report-detail">
+<app-reporte-tabla
+  titulo="Clientes con más compras efectivas"
+  [datos]="clientes()"
+  [columnas]="[
+    { nombre: 'Cliente' },
+    { nombre: 'Compras' },
+    { nombre: 'Total comprado', formato: 'moneda' },
+  ]"
+  nota="Identificadores comerciales; no se consultan datos personales."
+/></section>}
+
+@if(seccion()===5){<section class="report-detail">
+<app-reporte-tabla
+  titulo="Pedidos por estado"
+  [datos]="estados()"
+  [columnas]="[{ nombre: 'Estado' }, { nombre: 'Pedidos' }]"
+  nota=""
+/>
+<app-reporte-tabla
+  titulo="Pedidos por tipo"
+  [datos]="tipos()"
+  [columnas]="[{ nombre: 'Tipo' }, { nombre: 'Pedidos' }]"
+  nota="Las modalidades retiradas se agrupan como histórico para conservar los totales registrados."
+/></section>}

@@ -1,0 +1,26 @@
+# Vigilancia local: reconstruye solo la aplicación; no ejecuta migraciones SQL.
+services:
+  frontend:
+    develop:
+      watch:
+        - action: rebuild
+          path: ./polleria-frontend/src
+        - action: rebuild
+          path: ./polleria-frontend/public
+        - action: rebuild
+          path: ./polleria-frontend/angular.json
+        - action: rebuild
+          path: ./polleria-frontend/package.json
+        - action: rebuild
+          path: ./polleria-frontend/package-lock.json
+        - action: rebuild
+          path: ./polleria-frontend/tsconfig.json
+        - action: rebuild
+          path: ./polleria-frontend/tsconfig.app.json
+  backend:
+    develop:
+      watch:
+        - action: rebuild
+          path: ./polleria-backend/src/main
+        - action: rebuild
+          path: ./polleria-backend/pom.xml

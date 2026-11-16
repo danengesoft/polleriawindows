@@ -1,0 +1,27 @@
+import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
+import { destinoInterno } from '../../core/guards/rol-guard';
+import { INTERNOS } from '../../core/auth/auth-service';
+import { Component, inject, signal, Injectable, ViewChild, ElementRef, DestroyRef, Injector, afterNextRender } from '@angular/core';
+import { MatDialog, MatDialogRef, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
+import { AuthService } from '../../core/auth/auth-service';
+@Component({
+    selector: 'app-acceso-dialog', imports: [MatDialogTitle, MatDialogContent], template: `
+<div class="access-modal"><button type="button" class="modal-close" aria-label="Cerrar acceso" (click)="dialog.close(false)">×</button><p class="modal-brand">La <span>Brava</span><small>POLLOS Y PARRILLAS</small></p><h2 mat-dialog-title>Inicia sesión o regístrate</h2><mat-dialog-content>@if(mostrarMarco()){<iframe #marco title="Acceso seguro de La Brava" class="keycloak-access" (load)="ajustarMarco()" referrerpolicy="same-origin"></iframe>}<p>Accede a tu cuenta para consultar tus pedidos.</p><button type="button" class="login-primary" [disabled]="ocupado()" (click)="ingresar(false)">Continuar con correo</button><button type="button" class="login-register" [disabled]="ocupado()" (click)="ingresar(true)">Crear una cuenta</button><p class="access-caption">{{integrado ? "Completa el acceso seguro aquí. Tu carrito se conserva." : "El acceso se abrirá en una ventana segura. Tu carrito se conserva."}}</p>@if(ocupado()){<p role="status">Completa el acceso seguro…</p>}@if(auth.error()){<p role="alert">{{auth.error()}}</p>}<p class="access-caption">Puedes seguir comprando sin iniciar sesión.</p></mat-dialog-content></div>`, styles: `.access-modal{position:relative;padding:28px 20px 20px;background:#202124;color:#f4f0e8;border:1px solid #625138;border-radius:16px;text-align:center}.modal-close{position:absolute;right:12px;top:10px;width:32px;height:32px;background:transparent;border:0;color:#f4f0e8;font-size:24px;cursor:pointer}.modal-brand{font:2.5rem Georgia;margin:12px 0 20px}.modal-brand span{color:#c52035}.modal-brand small{display:block;color:#d7b67e;font:9px sans-serif;letter-spacing:.25em;margin-top:8px}.access-modal h2{font:1.6rem Georgia;color:#f4f0e8;margin:0 0 16px;padding:0}.access-modal mat-dialog-content{color:#ded7cd;max-height:70vh}.access-modal button:not(.modal-close){display:block;width:100%;padding:15px;margin:14px 0;border-radius:8px;color:white;font:600 .95rem sans-serif;cursor:pointer}.login-primary{background:#bd2134;border:1px solid #de3c50}.login-register{background:transparent;border:1px solid #ae8b54}.access-caption{font-size:.78rem;line-height:1.6;color:#bfb6a9}.access-modal [role=alert]{font-size:.85rem;color:#ffb8bd}.keycloak-access{width:100%;height:min(440px,58dvh);border:0;background:#fff;border-radius:8px}.access-modal:has(iframe) mat-dialog-content>p{display:none}.access-modal:has(iframe) .login-primary,.access-modal:has(iframe) .login-register{display:none}.access-modal:has(iframe) .modal-brand{font-size:1.6rem;margin:0 0 12px}.access-modal button:disabled{opacity:.6;cursor:wait}`
+})
+export class AccesoDialog {
+    @ViewChild('marco') marco?: ElementRef<HTMLIFrameElement>;
+    readonly auth = inject(AuthService); readonly dialog = inject(MatDialogRef<AccesoDialog>); readonly ocupado = signal(false); readonly mostrarMarco = signal(false);
+    readonly integrado = new URL(environment.keycloak.issuer).origin === location.origin;
+    private readonly injector = inject(Injector); private readonly cancelar = new AbortController();
+    constructor() { inject(DestroyRef).onDestroy(() => this.cancelar.abort()); }
+    ajustarMarco() { if (!this.integrado) return; try { const doc = this.marco?.nativeElement.contentDocument; if (!doc || doc.getElementById('brava-modal-style')) return; const style = doc.createElement('style'); style.id = 'brava-modal-style'; style.textContent = '#kc-header{display:none!important}.login-pf-page{padding:0!important}.login-pf-page .card-pf{margin:0!important;padding:16px!important;border-top:0!important;box-shadow:none!important}.login-pf-page .login-pf-header{margin-bottom:16px!important}#kc-page-title{font-size:22px!important;margin:8px 0!important}body{background:#24272a!important}'; doc.head.appendChild(style); } catch { } }
+    async ingresar(registro: boolean) { if (this.ocupado()) return; this.ocupado.set(true); try { let ok = false; if (this.integrado) { this.mostrarMarco.set(true); await new Promise<void>(resolve => afterNextRender(() => resolve(), { injector: this.injector })); if (this.marco) ok = await this.auth.iniciarLoginMarco(this.marco.nativeElement, registro, this.cancelar.signal); } else { ok = await this.auth.iniciarLoginVentana(registro, this.cancelar.signal); } if (ok) this.dialog.close(true); else this.mostrarMarco.set(false); } finally { this.ocupado.set(false); } }
+
+}
+
+@Injectable({ providedIn: 'root' })
+export class AccesoModalService {
+    private dialog = inject(MatDialog); private auth = inject(AuthService); private router = inject(Router);
+    abrir() { this.dialog.open(AccesoDialog, { width: '440px', maxWidth: 'calc(100vw - 28px)', maxHeight: '92dvh', autoFocus: 'first-tabbable' }).afterClosed().subscribe(ok => { if (ok && this.auth.tieneRol(...INTERNOS)) void this.router.navigateByUrl(destinoInterno(this.auth)); }); }
+}

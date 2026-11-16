@@ -1,0 +1,74 @@
+.access-page {
+  max-width: none;
+  width:100%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height:calc(100dvh - 84px);
+}
+.access-photo {
+  background:
+    linear-gradient(0deg, #0c0c0b, transparent 60%),
+    url('/images/la-brava/inicio-hero.png') 72% center/cover no-repeat;
+  min-height: 360px;
+}
+.access-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 50px 32px;
+}
+.access-copy h1 {
+  font-size: 0.7rem !important;
+  font-family: Arial, sans-serif !important;
+  letter-spacing: 0.3em !important;
+  color: #d8c29c !important;
+}
+.access-copy h2 {
+  font-size: 2.5rem !important;
+  margin: 20px 0 14px !important;
+}
+.access-copy > p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.access-actions {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0;
+}
+.access-actions button {
+  display: flex;
+  justify-content: space-between !important;
+  min-height: 54px !important;
+}
+.access-note {
+  font-size: 0.75rem !important;
+  max-width: 340px;
+  margin: 14px auto !important;
+}
+.access-link {
+  font-size: 0.8rem;
+  color: #d9bc89 !important;
+  text-underline-offset: 5px;
+}
+@media (max-width: 650px) {
+  .access-page {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .access-photo {
+    min-height: 250px;
+    background-position: 70% 50%;
+  }
+  .access-copy {
+    padding: 0 28px 32px;
+    margin-top: -8px;
+    position: relative;
+  }
+  .access-copy h2 {
+    font-size: 2rem !important;
+    margin-top: 14px !important;
+  }
+}

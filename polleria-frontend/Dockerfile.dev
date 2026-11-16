@@ -1,0 +1,5 @@
+FROM node:24-alpine
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --ignore-scripts
+CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "1000", "--configuration", "local", "--hmr=false"]

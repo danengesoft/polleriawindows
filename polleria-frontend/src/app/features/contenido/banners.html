@@ -1,0 +1,54 @@
+<div class="page-heading">
+    <div>
+        <h1>Local y página de inicio</h1>
+        <p>Administra la ubicación y las fotografías de la portada.</p>
+    </div>
+</div>
+<nav class="content-tabs" aria-label="Configuración de inicio"><button type="button" [class.active]="vista()==='fotos'"
+        (click)="vista.set('fotos')">Fotografías del carrusel</button><button type="button"
+        [class.active]="vista()==='ubicacion'" (click)="vista.set('ubicacion')">Ubicación del local</button><button
+        type="button" [class.active]="vista()==='destacados'" (click)="vista.set('destacados')">Destacados de la
+        carta</button><button type="button" [class.active]="vista()==='promociones'"
+        (click)="vista.set('promociones')">Promociones</button></nav>
+@if(vista()==='fotos'){
+<div class="banner-toolbar"><span>{{fotos().length}} de 10 fotos · Rotación automática</span><button type="button"
+        (click)="agregar()" [disabled]="!listo()||fotos().length>=10||ocupado()">Añadir fotografía</button><button
+        type="button" [disabled]="ocupado()||!listo()" (click)="guardar()">{{ocupado()?'Procesando…':'Guardar
+        portada'}}</button></div>
+@if(fotos().length>porPagina()){<nav class="photo-pages" aria-label="Páginas de fotografías"><button type="button"
+        class="secondary" [disabled]="pagina()===0" (click)="pagina.set(pagina()-1)">← Anterior</button><span>Página
+        {{pagina()+1}}</span><button type="button" class="secondary"
+        [disabled]="(pagina()+1)*porPagina()>=fotos().length" (click)="pagina.set(pagina()+1)">Siguiente →</button>
+</nav>}
+<p class="help">Selecciona una imagen para editarla. La misma fotografía se muestra en escritorio y celular. JPG o PNG,
+    hasta 20 MB.</p>
+@if(error()){<p role="alert">{{error()}}</p>}@if(aviso()){<p role="status">{{aviso()}}</p>}
+@if(!listo()){<button type="button" (click)="cargar()">{{cargando()?'Cargando…':'Reintentar'}}</button>}
+<div class="banner-grid">@for(item of visibles();track item.foto.id){@let b=item.foto;@let i=item.indice;<article
+        class="banner-card"><button type="button" class="photo-select" (click)="abrirEditor(b)"
+            [attr.aria-label]="'Editar foto '+(i+1)">@if(b.imagenUrl){<img [src]="api.imagen(b.imagenUrl)"
+                [alt]="b.titulo" />}@else{<span class="empty-photo">Seleccionar imagen</span>}<strong>Foto
+                {{i+1}}</strong><span class="photo-title">{{b.titulo}}</span></button>
+        <div class="photo-order"><button type="button" class="secondary" [disabled]="i===0||ocupado()"
+                (click)="mover(i,-1)" [attr.aria-label]="'Subir foto '+(i+1)">←</button><span>Editar
+                imagen</span><button type="button" class="secondary" [disabled]="i===fotos().length-1||ocupado()"
+                (click)="mover(i,1)" [attr.aria-label]="'Bajar foto '+(i+1)">→</button></div>
+    </article>}</div>
+} @else if (vista() === 'ubicacion') {
+<app-ubicacion-admin />
+} @else if (vista() === 'destacados') {
+<app-destacados-admin />
+} @else {
+<app-promociones-admin />
+}
+<ng-template #editor>
+    <h2 mat-dialog-title>Editar fotografía</h2><mat-dialog-content>@if(seleccionada();as b){<div class="photo-editor">
+            @if(b.imagenUrl){<img [src]="api.imagen(b.imagenUrl)" [alt]="b.titulo" />}<label>Nombre / texto
+                alternativo<input [(ngModel)]="b.titulo" maxlength="120"
+                    [disabled]="ocupado()" /></label><label>Reemplazar fotografía<input type="file"
+                    accept="image/jpeg,image/png" [disabled]="ocupado()" (change)="subir($event,b)" /></label>
+            <p>Una sola imagen para escritorio y celular. Guarda la portada para publicar los cambios.</p>@if(error()){
+            <p role="alert">{{error()}}</p>}
+        </div>}</mat-dialog-content><mat-dialog-actions align="end"><button type="button" [disabled]="ocupado()"
+            (click)="cerrarEditor()">Listo</button></mat-dialog-actions>
+</ng-template>

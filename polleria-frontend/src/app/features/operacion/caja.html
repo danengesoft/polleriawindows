@@ -1,0 +1,35 @@
+<h1>{{ titulos[vista()] }}</h1>
+<div class="metric-grid">
+  @if (vista() === 'caja') {
+    <article>
+      <small>Total pendiente de pago</small>
+      <strong>{{ totalPendiente() | currency:'PEN':'S/ ':'1.2-2' }}</strong>
+    </article>
+  }
+  <article><small>Pedidos en esta vista</small><strong>{{ pedidos().length }}</strong></article>
+</div>
+@if (vista() === 'caja') {
+  <a class="action" routerLink="/interno/pedidos/nuevo">Nueva venta · Ver carta</a>
+  <h2>Pedidos por cobrar</h2>
+}
+<p role="alert">{{ error() }}</p>
+@for (p of pedidos(); track p.id) {
+  <article>
+    <h3>#{{ p.id }} · {{ etiqueta(p.tipoPedido) }} {{ p.mesaNumero ? '· Mesa ' + p.mesaNumero : '' }}</h3>
+    <p>Pedido: {{ p.estado }} · Pago: {{ p.estadoPago }}</p>
+    <p>{{ p.total | currency:'PEN':'S/ ':'1.2-2' }}</p>
+    <a [routerLink]="['/interno/pedidos', p.id]">
+      {{ vista() === 'caja' && p.metodoPago === 'EFECTIVO' ? 'Proceder al pago' : 'Ver pedido' }}
+    </a>
+  </article>
+} @empty {
+  @if (cargando()) {
+    <p role="status">Cargando pedidos…</p>
+  } @else if (!error()) {
+    @switch (vista()) {
+      @case ('caja') { <p>No hay pedidos por cobrar.</p> }
+      @case ('pendientes') { <p>No hay pedidos pendientes de entrega.</p> }
+      @case ('entregados') { <p>No hay pedidos entregados.</p> }
+    }
+  }
+}
