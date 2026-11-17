@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, Object>> imagenGrande(Exception ex) {
-        return error(HttpStatus.PAYLOAD_TOO_LARGE, "La imagen no puede superar 20 MB");
+        return error(HttpStatus.CONTENT_TOO_LARGE, "La imagen no puede superar 20 MB");
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

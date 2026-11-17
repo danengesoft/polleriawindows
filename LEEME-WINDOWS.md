@@ -78,15 +78,19 @@ Copia `polleria-imagenes.tar` a la carpeta del proyecto en la otra PC (junto a `
 `iniciar.bat` lo carga solo y **no necesita compilar**. Oracle, Keycloak y PostgreSQL se
 descargan si faltan.
 
-## Diferencias con la versión de Fedora
+## Proyecto solo para Windows
 
-- Los archivos `compose*.yml` **no tienen** las opciones `:z` / `:Z` en los volúmenes (son de
-  SELinux, propias de Fedora).
-- Se agregó `.gitattributes` para que Git no cambie los saltos de línea en Windows (si cambian,
-  el backend no compila).
+Este repositorio está preparado **solo para Windows con Docker Desktop**. Ya no incluye los
+scripts de Linux/Fedora ni los de publicación en un servidor de producción.
+
+- `.gitattributes` evita que Git cambie los saltos de línea en Windows (si cambian, el backend
+  no compila). Los `.sh` de `windows\` no se ejecutan en Windows: se copian y corren **dentro**
+  de los contenedores.
 - Las tareas de `.vscode/tasks.json` usan los scripts de Windows y **no** se ejecutan solas al
   abrir la carpeta.
-- Se agregaron la carpeta `windows\` y los `.bat`. El código de la aplicación es el mismo.
+- Para compilar el backend fuera de Docker usa `polleria-backend\mvnw.cmd` (necesita JDK 21).
+- `production\nginx\https.conf.template` no se usa en Windows, pero lo menciona
+  `compose.prod.yml`: no lo borres.
 
 ## Problemas comunes
 
