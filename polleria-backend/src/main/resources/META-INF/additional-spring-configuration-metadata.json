@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "polleria.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Orígenes permitidos para CORS, separados por comas."
+    },
+    {
+      "name": "polleria.imagenes.directorio",
+      "type": "java.lang.String",
+      "description": "Carpeta donde se guardan las imágenes subidas.",
+      "defaultValue": "./var/imagenes-productos"
+    },
+    {
+      "name": "polleria.imagenes.base-publica",
+      "type": "java.lang.String",
+      "description": "URL pública base con la que se construyen los enlaces a las imágenes.",
+      "defaultValue": "http://localhost:8080"
+    },
+    {
+      "name": "polleria.pagos.simulador-habilitado",
+      "type": "java.lang.Boolean",
+      "description": "Habilita el simulador de pagos (solo para pruebas).",
+      "defaultValue": false
+    },
+    {
+      "name": "polleria.web.cookie-secure",
+      "type": "java.lang.Boolean",
+      "description": "Marca la cookie de sesión web como Secure (requiere HTTPS).",
+      "defaultValue": true
+    }
+  ]
+}
