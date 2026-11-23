@@ -99,7 +99,7 @@ scripts de Linux/Fedora ni los de publicación en un servidor de producción.
 | La ventana se cierra o dice que los scripts están deshabilitados | Ejecuta el `.bat` (no el `.ps1`). Si persiste: desbloquea el ZIP (paso 1 de Uso) y descomprime de nuevo |
 | "Docker no está instalado" / "Docker no responde" | Instala o abre Docker Desktop y espera a **Engine running** |
 | Docker Desktop no inicia: falta virtualización o WSL | Activar la virtualización en la BIOS; en PowerShell como administrador: `wsl --install` y reiniciar |
-| Falla en el paso 7 por el puerto `18080` en uso | Cierra el programa que lo usa o reinicia Docker Desktop |
+| "El puerto 18080 lo está usando…" | Otra copia del sistema u otro proyecto ocupa el puerto. `iniciar.bat` ofrece apagarlo (responde **S**). Si es un programa de Windows, dice cuál es: ciérralo |
 | Falla en el paso 7 por tiempo de espera | La PC es lenta: ejecuta `iniciar.bat` otra vez (continúa donde quedó) |
 | "TABLAS_INCOMPLETAS" | La creación de tablas se cortó a la mitad. Pide ayuda antes de seguir |
 | Entra con un usuario pero aparece **"sin permiso"** | El usuario no tiene rol o correo verificado: créalo con `crear-usuario.bat` |

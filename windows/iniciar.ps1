@@ -84,6 +84,10 @@ if (Imagenes-Listas) {
     }
 }
 
+# Puerto del sistema ------------------------------------------------------------
+Paso "Revisando el puerto $PuertoSistema"
+Liberar-Puerto $PuertoSistema $cfg['COMPOSE_PROJECT_NAME']
+
 # 5. PostgreSQL ---------------------------------------------------------------
 Paso '5/7 Base de datos PostgreSQL'
 # --remove-orphans quita el contenedor de Oracle de versiones anteriores (su volumen se conserva).
@@ -126,6 +130,7 @@ if ($LASTEXITCODE -ne 0) {
     Invoke-Compose ps
     Fallar 'Algún servicio no quedó listo. Revisa sus registros con: docker compose --env-file .env.prodtest -f compose.prod.yml -f compose.prodtest.yml logs --tail 100 backend'
 }
+Asegurar-PuertoFrontend
 Ok 'Todos los servicios están listos.'
 
 # Usuarios de prueba ----------------------------------------------------------
