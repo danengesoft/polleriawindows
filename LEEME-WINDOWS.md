@@ -13,7 +13,7 @@ con **doble clic**, sin escribir comandos.
 | Internet la primera vez | Para descargar imágenes y compilar (o traer `polleria-imagenes.tar`, ver abajo) |
 
 > Instalar Docker Desktop requiere **permisos de administrador**. No hace falta instalar Git,
-> Java, Node, Oracle ni nada más: todo corre dentro de Docker.
+> Java, Node, PostgreSQL ni nada más: todo corre dentro de Docker.
 
 ## Uso
 
@@ -31,12 +31,12 @@ falte):
 2. Crea el archivo de configuración `.env.prodtest` con contraseñas aleatorias (si no existe).
 3. Prepara la configuración del login (Keycloak).
 4. Carga las imágenes desde `polleria-imagenes.tar` si está, o compila el proyecto.
-5. Levanta Oracle y espera a que esté listo.
-6. Crea las tablas (solo la primera vez).
+5. Levanta PostgreSQL y espera a que esté listo.
+6. Crea las tablas de la pollería y del módulo clínica (solo la primera vez).
 7. Levanta Keycloak, backend y frontend.
 8. Crea los usuarios de prueba y abre el navegador en **http://127.0.0.1:18080**.
 
-La **primera vez** tarda bastante (descargas + compilación + Oracle): entre 10 y 25 minutos según
+La **primera vez** tarda bastante (descargas + compilación): entre 5 y 15 minutos según
 la PC y el internet. Las siguientes veces, 1 o 2 minutos.
 
 ## Usuarios de prueba
@@ -75,18 +75,22 @@ docker save -o polleria-imagenes.tar polleria-backend:prod-test-f19 polleria-fro
 ```
 
 Copia `polleria-imagenes.tar` a la carpeta del proyecto en la otra PC (junto a `iniciar.bat`):
-`iniciar.bat` lo carga solo y **no necesita compilar**. Oracle, Keycloak y PostgreSQL se
+`iniciar.bat` lo carga solo y **no necesita compilar**. Keycloak y PostgreSQL se
 descargan si faltan.
 
-## Diferencias con la versión de Fedora
+## Proyecto solo para Windows
 
-- Los archivos `compose*.yml` **no tienen** las opciones `:z` / `:Z` en los volúmenes (son de
-  SELinux, propias de Fedora).
-- Se agregó `.gitattributes` para que Git no cambie los saltos de línea en Windows (si cambian,
-  el backend no compila).
+Este repositorio está preparado **solo para Windows con Docker Desktop**. Ya no incluye los
+scripts de Linux/Fedora ni los de publicación en un servidor de producción.
+
+- `.gitattributes` evita que Git cambie los saltos de línea en Windows (si cambian, el backend
+  no compila). Los `.sh` de `windows\` no se ejecutan en Windows: se copian y corren **dentro**
+  de los contenedores.
 - Las tareas de `.vscode/tasks.json` usan los scripts de Windows y **no** se ejecutan solas al
   abrir la carpeta.
-- Se agregaron la carpeta `windows\` y los `.bat`. El código de la aplicación es el mismo.
+- Para compilar el backend fuera de Docker usa `polleria-backend\mvnw.cmd` (necesita JDK 21).
+- `production\nginx\https.conf.template` no se usa en Windows, pero lo menciona
+  `compose.prod.yml`: no lo borres.
 
 ## Problemas comunes
 
@@ -95,15 +99,59 @@ descargan si faltan.
 | La ventana se cierra o dice que los scripts están deshabilitados | Ejecuta el `.bat` (no el `.ps1`). Si persiste: desbloquea el ZIP (paso 1 de Uso) y descomprime de nuevo |
 | "Docker no está instalado" / "Docker no responde" | Instala o abre Docker Desktop y espera a **Engine running** |
 | Docker Desktop no inicia: falta virtualización o WSL | Activar la virtualización en la BIOS; en PowerShell como administrador: `wsl --install` y reiniciar |
-| Falla en el paso 7 por el puerto `18080` en uso | Cierra el programa que lo usa o reinicia Docker Desktop |
+| "El puerto 18080 lo está usando…" | Otra copia del sistema u otro proyecto ocupa el puerto. `iniciar.bat` ofrece apagarlo (responde **S**). Si es un programa de Windows, dice cuál es: ciérralo |
 | Falla en el paso 7 por tiempo de espera | La PC es lenta: ejecuta `iniciar.bat` otra vez (continúa donde quedó) |
 | "TABLAS_INCOMPLETAS" | La creación de tablas se cortó a la mitad. Pide ayuda antes de seguir |
 | Entra con un usuario pero aparece **"sin permiso"** | El usuario no tiene rol o correo verificado: créalo con `crear-usuario.bat` |
 | Borraste `.env.prodtest` y ya nada arranca | Las bases de datos usan las contraseñas del archivo anterior. Restáuralo; si no lo tienes, borra los datos en Docker Desktop → Volumes (los que empiezan con `polleria-prodtest`) y ejecuta `iniciar.bat` |
 
 **Ver los errores de un servicio** (en PowerShell, dentro de la carpeta del proyecto; cambia
-`backend` por `keycloak`, `oracle` o `frontend`):
+`backend` por `keycloak`, `postgres` o `frontend`):
 
 ```powershell
 docker compose --env-file .env.prodtest -f compose.prod.yml -f compose.prodtest.yml logs --tail 100 backend
 ```
+
+## Base de datos: PostgreSQL
+
+Desde esta versión el sistema usa **PostgreSQL 17** (contenedor `polleria-prodtest-postgres-1`),
+con la base `polleria` y el usuario `polleria`. Tiene dos esquemas:
+
+| Esquema | Contenido | Script |
+|---|---|---|
+| `polleria` | Tablas de la pollería | `polleria-backend\scripts\01-polleria.sql` |
+| `exa_clinica` | Módulo clínica (examen v7) | `polleria-backend\scripts\02-clinica.sql` |
+
+`iniciar.bat` crea los dos esquemas la primera vez. Si venías de la versión con Oracle,
+`iniciar.bat` agrega sola la clave `POLLERIA_DB_PASSWORD` a `.env.prodtest` y apaga el
+contenedor de Oracle. **Los datos de Oracle no se copian**: la base nueva empieza vacía.
+Cuando ya no los necesites, borra el volumen viejo en Docker Desktop → Volumes
+(`polleria-prodtest_oracle-data`).
+
+Listar las tablas del módulo clínica (como en el script 3 del examen):
+
+```powershell
+$DB = 'polleria-prodtest-postgres-1'
+@'
+SELECT table_name FROM information_schema.tables WHERE table_schema = 'exa_clinica' ORDER BY 1;
+'@ | docker exec -i $DB psql -U polleria -d polleria
+```
+
+Abrir una consola SQL:
+
+```powershell
+docker exec -it polleria-prodtest-postgres-1 psql -U polleria -d polleria
+```
+
+## Módulo clínica
+
+En el portal interno, como **ADMINISTRADOR**, sección **Clínica** del menú:
+
+| Pantalla | Ruta |
+|---|---|
+| Clínicas (listar, crear, editar, eliminar) | `/interno/clinica/clinicas` |
+| Especialidades (precargadas) | `/interno/clinica/especialidades` |
+| Consultorios con sus especialidades | `/interno/clinica/consultorios` |
+
+La guía que explica cómo está construido, archivo por archivo, está en
+`docs\GUIA-MODULO-CLINICA.md`.

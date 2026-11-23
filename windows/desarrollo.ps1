@@ -1,5 +1,5 @@
 ﻿# Modo desarrollo: los cambios del frontend se ven al guardar y el backend se
-# reconstruye solo. Equivale a scripts/desarrollo.sh de Linux.
+# reconstruye solo.
 . (Join-Path $PSScriptRoot 'comun.ps1')
 
 if (-not (Test-Path $EnvFile)) { Fallar 'Primero ejecuta iniciar.bat.' }

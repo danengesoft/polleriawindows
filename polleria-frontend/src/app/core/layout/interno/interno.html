@@ -43,6 +43,15 @@
           nombre="pedido" />Pedidos</a>
       }
       @if (auth.tieneRol('ADMINISTRADOR')) {
+      <span class="nav-section">Clínica</span>
+      <a routerLink="/interno/clinica/clinicas" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="cliente" />Clínicas</a>
+      <a routerLink="/interno/clinica/especialidades" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="categoria" />Especialidades</a>
+      <a routerLink="/interno/clinica/consultorios" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
+          nombre="producto" />Consultorios</a>
+      }
+      @if (auth.tieneRol('ADMINISTRADOR')) {
       <a routerLink="/interno/reportes" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icono-portal
           nombre="reporte" />Reportes</a>
       }

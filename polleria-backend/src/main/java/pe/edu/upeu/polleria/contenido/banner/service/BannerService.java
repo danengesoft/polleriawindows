@@ -26,7 +26,7 @@ public class BannerService {
         try {
             if (Files.size(archivo) > 65536)
                 throw new IllegalStateException("Configuración de portada inválida");
-            return mapper.readValue(Files.readAllBytes(archivo), BannersRequest.class);
+            return actualizarRutas(mapper.readValue(Files.readAllBytes(archivo), BannersRequest.class));
         } catch (IOException e) {
             throw new IllegalStateException("No se pudo leer la portada", e);
         }
@@ -36,8 +36,8 @@ public class BannerService {
         if (request.banners().isEmpty() || request.banners().stream().anyMatch(b -> !Boolean.TRUE.equals(b.activo())))
             throw new InvalidRequestException(
                     "El carrusel debe conservar fotografías activas; reemplaza la imagen para cambiarla");
-        request = new BannersRequest(request.banners().stream()
-                .map(b -> new Banner(b.id(), b.titulo(), b.imagenUrl(), null, b.activo())).toList());
+        request = actualizarRutas(new BannersRequest(request.banners().stream()
+                .map(b -> new Banner(b.id(), b.titulo(), b.imagenUrl(), null, b.activo())).toList()));
         Set<String> ids = new HashSet<>();
         for (Banner b : request.banners()) {
             try {
@@ -69,8 +69,25 @@ public class BannerService {
         }
     }
 
+    // Portadas guardadas antes del cambio de nombre apuntaban a /images/la-brava/.
+    private static final String RUTA_ANTERIOR = "/images/la-brava/";
+    private static final String FOTO_ORIGINAL = "/images/polleria-neyos/inicio-hero.png";
+
+    private static BannersRequest actualizarRutas(BannersRequest request) {
+        if (request.banners() == null)
+            return request;
+        return new BannersRequest(request.banners().stream().map(b -> new Banner(b.id(), b.titulo(),
+                ruta(b.imagenUrl()), ruta(b.imagenMovilUrl()), b.activo())).toList());
+    }
+
+    private static String ruta(String valor) {
+        return valor != null && valor.startsWith(RUTA_ANTERIOR)
+                ? "/images/polleria-neyos/" + valor.substring(RUTA_ANTERIOR.length())
+                : valor;
+    }
+
     private void validarImagen(String ruta) {
-        if ("/images/la-brava/inicio-hero.png".equals(ruta))
+        if (FOTO_ORIGINAL.equals(ruta))
             return;
         if (ruta == null || !ruta.matches(
                 "/api/v1/productos/imagenes/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\.(jpg|png)"))

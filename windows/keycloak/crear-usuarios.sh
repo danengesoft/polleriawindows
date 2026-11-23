@@ -13,14 +13,16 @@ $KC config credentials --config "$CFG" --server http://localhost:8080/auth --rea
 crear() {
   local correo=$1 nombre=$2 rol=$3
   if $KC get users --config "$CFG" -r polleria -q exact=true -q username="$correo" --fields id | grep -q '"id"'; then
-    echo "Ya existe: $correo ($rol)"
-    return 0
+    echo "Ya existe: $correo"
+  else
+    $KC create users --config "$CFG" -r polleria -s username="$correo" -s email="$correo" \
+      -s emailVerified=true -s enabled=true -s firstName="$nombre" -s lastName=Neyos >/dev/null || return 1
+    $KC set-password --config "$CFG" -r polleria --username "$correo" --new-password "$CLAVE_DEMO" || return 1
+    echo "Creado: $correo"
   fi
-  $KC create users --config "$CFG" -r polleria -s username="$correo" -s email="$correo" \
-    -s emailVerified=true -s enabled=true -s firstName="$nombre" -s lastName=Neyos >/dev/null || return 1
-  $KC set-password --config "$CFG" -r polleria --username "$correo" --new-password "$CLAVE_DEMO" || return 1
-  $KC add-roles --config "$CFG" -r polleria --uname "$correo" --rolename "$rol" || return 1
-  echo "Creado: $correo ($rol)"
+  # Siempre se asigna el rol (no falla si ya lo tiene): repara usuarios creados sin rol.
+  $KC add-roles --config "$CFG" -r polleria --uusername "$correo" --rolename "$rol" || return 1
+  echo "Rol asignado: $correo ($rol)"
 }
 
 error=0

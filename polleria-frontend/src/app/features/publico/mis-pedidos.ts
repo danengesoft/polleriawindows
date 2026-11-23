@@ -9,7 +9,7 @@ import { mensajeHttp } from '../../shared/http-error';
   selector: 'app-mis-pedidos',
   imports: [EstadoBadge, CurrencyPipe, DatePipe, RouterLink],
   styleUrl: './publico.css',
-  template: ` <p class="eyebrow">Tus momentos con La Brava</p>
+  template: ` <p class="eyebrow">Tus momentos con Pollería Neyos</p>
     <h1>Mis pedidos</h1>
     <p>Consulta tus pedidos y su estado actual.</p>
     @if (error()) {

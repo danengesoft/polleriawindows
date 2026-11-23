@@ -35,7 +35,7 @@ public final class WebCripto {
     }
 
     public static String csrf(String token) {
-        return hash("la-brava-csrf:" + token);
+        return hash("polleria-neyos-csrf:" + token);
     }
 
     /**

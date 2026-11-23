@@ -2,16 +2,18 @@ server:
   address: 0.0.0.0
   port: 8080
   forward-headers-strategy: framework
-  error:
-    include-message: never
-    include-stacktrace: never
-    include-binding-errors: never
 spring:
+  web:
+    # Spring Boot 4 movió server.error.* a spring.web.error.* (la clave antigua se ignora).
+    error:
+      include-message: never
+      include-stacktrace: never
+      include-binding-errors: never
   datasource:
-    url: ${ORACLE_JDBC_URL}
-    username: ${ORACLE_APP_USER}
-    password: ${ORACLE_APP_PASSWORD}
-    driver-class-name: oracle.jdbc.OracleDriver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   security:
     oauth2:
       resourceserver:

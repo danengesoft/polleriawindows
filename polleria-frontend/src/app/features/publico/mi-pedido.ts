@@ -50,7 +50,7 @@ export class MiPedido {
         : estado === 'EN_CAMINO'
           ? 'Tu pedido está en camino con el repartidor.'
           : estado === 'ENTREGADO'
-            ? 'Tu pedido fue entregado. Gracias por elegir La Brava.'
+            ? 'Tu pedido fue entregado. Gracias por elegir Pollería Neyos.'
             : 'Consulta el estado registrado de tu pedido.';
   }
   readonly recienCreado = Boolean(

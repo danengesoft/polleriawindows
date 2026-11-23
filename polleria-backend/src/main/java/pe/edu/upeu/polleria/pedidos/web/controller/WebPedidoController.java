@@ -69,9 +69,9 @@ public class WebPedidoController {
     public Map<String, Object> pagoPrueba(HttpServletRequest r, @PathVariable Long id, @RequestBody JsonNode body) {
         campos(body, Set.of("resultado"));
         var resultado = body.get("resultado");
-        if (resultado == null || !resultado.isTextual())
+        if (resultado == null || !resultado.isString())
             throw new InvalidRequestException("Resultado de prueba requerido");
-        return pedidos.pagoPrueba(WebSesionService.cookie(r), id, resultado.asText());
+        return pedidos.pagoPrueba(WebSesionService.cookie(r), id, resultado.asString());
     }
 
     @GetMapping("/pedidos/{id}")
@@ -87,9 +87,9 @@ public class WebPedidoController {
     @PostMapping("/pedidos/{id}/recuperar")
     public WebPedidoResponse recuperar(HttpServletRequest r, @PathVariable Long id, @RequestBody JsonNode body) {
         campos(body, Set.of("clave"));
-        if (body.get("clave") == null || !body.get("clave").isTextual())
+        if (body.get("clave") == null || !body.get("clave").isString())
             throw new InvalidRequestException("Clave de recuperación inválida");
-        return pedidos.recuperar(WebSesionService.cookie(r), id, body.get("clave").asText());
+        return pedidos.recuperar(WebSesionService.cookie(r), id, body.get("clave").asString());
     }
 
     @PostMapping("/pedidos/{id}/revocar")

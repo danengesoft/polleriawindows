@@ -12,7 +12,7 @@ import { IconoCliente } from './icono-cliente';
       <div class="access-photo" aria-hidden="true"></div>
       <div class="access-copy">
         <p class="eyebrow">Buena comida, mejores momentos</p>
-        <h1>LA BRAVA</h1>
+        <h1>POLLERÍA NEYOS</h1>
         <h2>Bienvenido</h2>
         <p>Disfruta de nuestros pollos y parrillas, donde estés.</p>
         <div class="access-actions">
@@ -30,7 +30,7 @@ import { IconoCliente } from './icono-cliente';
           Primera visita: regístrate y luego inicia sesión. Tu cuenta te permite consultar tus
           pedidos.
         </p>
-        <a class="access-link" routerLink="/inicio">Descubrir La Brava</a>
+        <a class="access-link" routerLink="/inicio">Descubrir Pollería Neyos</a>
         <p class="access-note">
           Los trabajadores utilizan únicamente su cuenta previamente autorizada.
         </p>

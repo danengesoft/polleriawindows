@@ -111,6 +111,8 @@ public class SecurityConfig {
                                                 .hasAnyRole("ADMINISTRADOR", "CAJERO")
                                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/clientes/*")
                                                 .hasRole("ADMINISTRADOR")
+                                                // Módulo clinica (examen v7): solo el administrador.
+                                                .requestMatchers("/api/v1/clinica/**").hasRole("ADMINISTRADOR")
                                                 .requestMatchers("/api/v1/delivery/**").denyAll()
                                                 .requestMatchers(HttpMethod.PATCH,"/api/v1/pedidos/*/confirmar-pago").hasAnyRole("ADMINISTRADOR","CAJERO")
                                                 // Reports must precede general order matchers.

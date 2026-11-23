@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../../core/services/api-service';
 export interface Banner { id: string; titulo: string; imagenUrl: string; imagenMovilUrl: string | null; activo: boolean }
-export const BANNER_ORIGINAL: Banner = { id: '00000000-0000-0000-0000-000000000001', titulo: 'Pollos y parrillas La Brava', imagenUrl: '/images/la-brava/inicio-hero.png', imagenMovilUrl: null, activo: true };
+export const BANNER_ORIGINAL: Banner = { id: '00000000-0000-0000-0000-000000000001', titulo: 'Pollos y parrillas Pollería Neyos', imagenUrl: '/images/polleria-neyos/inicio-hero.png', imagenMovilUrl: null, activo: true };
 @Injectable({ providedIn: 'root' })
 export class BannersService {
     private http = inject(HttpClient); private api = inject(ApiService);
