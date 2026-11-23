@@ -407,3 +407,7 @@ navegador automatizado repitió **exactamente la revisión en vivo** de la Tabla
    `@ManyToMany`, porque hay que borrar primero las filas de `CONSULTORIO_ESPECIALIDAD`.
 5. **Los errores no aparecen en el formulario:** falta `markAllAsTouched()` antes de salir de
    `guardar()`, o falta el `<mat-error>` dentro de `<mat-form-field>`.
+
+---
+
+**Siguiente práctica:** [GUIA-CRUD-ESPECIALIDADES.md](GUIA-CRUD-ESPECIALIDADES.md) explica, paso a paso, cómo darle a Especialidades el mismo CRUD que tiene Clínicas.
