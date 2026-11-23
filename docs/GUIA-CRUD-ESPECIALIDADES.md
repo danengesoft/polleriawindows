@@ -9,6 +9,35 @@ Hoy la pantalla **Especialidades** solo lista. Esta guía la deja igual que **Cl
 
 Todo el código de esta guía se compiló y se probó en el navegador antes de escribirla.
 
+## Antes de empezar: las partes A y B son obligatorias
+
+**No son opciones a elegir**: son las dos mitades del mismo trabajo. Solo están separadas porque
+cada una va en una carpeta distinta.
+
+```text
+Página (Parte B)                       Servidor (Parte A)                  Base de datos
+─────────────────                      ──────────────────                  ─────────────
+Botón "Guardar"  ──POST /api/v1/──►    EspecialidadController  ──►  Service  ──►  ESPECIALIDADES
+                   clinica/especialidades
+Mensaje "Especialidad creada" ◄────    responde 201 con los datos
+```
+
+| Lo que haces | Lo que ves en la página |
+|---|---|
+| Solo la **A** (backend) | Nada cambia: no hay botones. Solo funcionaría desde Postman o Swagger |
+| Solo la **B** (frontend) | Ves los botones, pero al guardar sale un error, porque el servidor no sabe crear ni editar |
+| **A + B** | ✅ Funciona completo |
+
+**Orden recomendado:**
+
+1. **Parte A primero.** Al terminar, compila con `.\mvnw.cmd -q -DskipTests package` (dentro de
+   `polleria-backend`). Si no muestra nada, el servidor está listo.
+2. **Parte B después.** Así, cuando pruebes los botones, el servidor ya sabe responder.
+3. **Reconstruye y levanta** con el comando de la sección [Probar](#probar), porque cambiaste las
+   dos partes.
+
+La **Parte C** (columna "Activa") sí es **opcional**. Hazla solo después de que A y B funcionen.
+
 **Cómo leer cada paso:**
 
 - **📄 ARCHIVO NUEVO:** crea el archivo en esa ruta y pega el código completo.
