@@ -27,12 +27,13 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
         @Query("SELECT p FROM Pedido p WHERE p.id = :id")
         Optional<Pedido> buscarParaCambioEstado(@Param("id") Long id);
 
+        // PostgreSQL no deduce el tipo de una fecha nula en ":desde IS NULL": el CAST se lo indica.
         String FILTROS = """
                         WHERE (:estado IS NULL OR p.estado = :estado)
                           AND (:tipo IS NULL OR p.tipoPedido = :tipo)
                           AND (:clienteId IS NULL OR p.clienteId = :clienteId)
-                          AND (:desde IS NULL OR p.fecha >= :desde)
-                          AND (:hasta IS NULL OR p.fecha < :hasta)
+                          AND (CAST(:desde AS LocalDateTime) IS NULL OR p.fecha >= :desde)
+                          AND (CAST(:hasta AS LocalDateTime) IS NULL OR p.fecha < :hasta)
                         """;
         String VENTA_EFECTIVA = """
                           AND p.estado = pe.edu.upeu.polleria.pedidos.pedido.entity.EstadoPedido.ENTREGADO
