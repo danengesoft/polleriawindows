@@ -411,3 +411,5 @@ navegador automatizado repitió **exactamente la revisión en vivo** de la Tabla
 ---
 
 **Siguiente práctica:** [GUIA-CRUD-ESPECIALIDADES.md](GUIA-CRUD-ESPECIALIDADES.md) explica, paso a paso, cómo darle a Especialidades el mismo CRUD que tiene Clínicas.
+
+**Para construirlo tú desde cero, con cada archivo completo:** [GUIA-MODULO-CLINICA-PASO-A-PASO.md](GUIA-MODULO-CLINICA-PASO-A-PASO.md).

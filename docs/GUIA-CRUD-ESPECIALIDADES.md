@@ -7,9 +7,14 @@ Hoy la pantalla **Especialidades** solo lista. Esta guía la deja igual que **Cl
 - un formulario que sirve para crear y para editar, con los errores visibles;
 - *(opcional, Parte C)* la columna **Activa**.
 
+**Cada paso trae el archivo completo.** No hay que buscar dónde va cada bloque: abres el archivo,
+borras todo y pegas el código. Si el archivo no existe, lo creas.
+
 Todo el código de esta guía se compiló y se probó en el navegador antes de escribirla.
 
-## Antes de empezar: las partes A y B son obligatorias
+## Antes de empezar
+
+### Las partes A y B son obligatorias
 
 **No son opciones a elegir**: son las dos mitades del mismo trabajo. Solo están separadas porque
 cada una va en una carpeta distinta.
@@ -28,55 +33,63 @@ Mensaje "Especialidad creada" ◄────    responde 201 con los datos
 | Solo la **B** (frontend) | Ves los botones, pero al guardar sale un error, porque el servidor no sabe crear ni editar |
 | **A + B** | ✅ Funciona completo |
 
-**Orden recomendado:**
+### Orden
 
-1. **Parte A primero.** Al terminar, compila con `.\mvnw.cmd -q -DskipTests package` (dentro de
-   `polleria-backend`). Si no muestra nada, el servidor está listo.
-2. **Parte B después.** Así, cuando pruebes los botones, el servidor ya sabe responder.
-3. **Reconstruye y levanta** con el comando de la sección [Probar](#probar), porque cambiaste las
-   dos partes.
+1. **Parte A** (7 archivos del backend). Al terminar, compila:
 
-La **Parte C** (columna "Activa") sí es **opcional**. Hazla solo después de que A y B funcionen.
+   ```bash
+   cd C:\polleriawindows\polleria-backend
+   ```
 
-**Cómo leer cada paso:**
+   ```bash
+   .\mvnw.cmd -q -DskipTests package
+   ```
 
-- **📄 ARCHIVO NUEVO:** crea el archivo en esa ruta y pega el código completo.
-- **✏️ MODIFICAR:** el archivo ya existe; la guía dice qué agregar o qué reemplazar y en qué lugar.
+   Si no muestra nada, compiló bien.
 
-Rutas base:
+2. **Parte B** (7 archivos del frontend).
+3. **Probar** (al final de la guía).
+4. **Parte C**, solo si quieres la columna "Activa". Es opcional.
 
-- Backend: `polleria-backend/src/main/java/pe/edu/upeu/polleria/clinica/`
-- Frontend: `polleria-frontend/src/app/`
+### La base de datos
 
-**Resumen de archivos:**
+Para las partes A y B **no se toca**: la tabla `ESPECIALIDADES` ya existe. Solo la Parte C
+necesita un cambio (paso C1).
+
+### Resumen de archivos
+
+Todas las rutas parten de `C:\polleriawindows\`.
 
 | # | Archivo | Acción |
 |---|---|---|
-| A1 | `clinica/especialidad/dto/EspecialidadRequest.java` | 📄 Nuevo |
-| A2 | `clinica/especialidad/mapper/EspecialidadMapper.java` | ✏️ Modificar |
-| A3 | `clinica/especialidad/repository/EspecialidadRepository.java` | ✏️ Modificar |
-| A4 | `clinica/consultorio/repository/ConsultorioRepository.java` | ✏️ Modificar |
-| A5 | `clinica/especialidad/service/EspecialidadService.java` | ✏️ Modificar |
-| A6 | `clinica/especialidad/service/EspecialidadServiceImpl.java` | ✏️ Modificar (reemplazar todo) |
-| A7 | `clinica/especialidad/controller/EspecialidadController.java` | ✏️ Modificar (reemplazar todo) |
-| B1 | `features/clinica/clinica.model.ts` | ✏️ Modificar |
-| B2 | `features/clinica/clinica-service.ts` | ✏️ Modificar |
-| B3 | `features/clinica/especialidad-list.ts` | ✏️ Modificar (reemplazar todo) |
-| B4 | `features/clinica/especialidad-list.html` | 📄 Nuevo |
-| B5 | `features/clinica/especialidad-form.ts` | 📄 Nuevo |
-| B6 | `features/clinica/especialidad-form.html` | 📄 Nuevo |
-| B7 | `app.routes.ts` | ✏️ Modificar |
+| A1 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\dto\EspecialidadRequest.java` | 📄 Nuevo |
+| A2 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\mapper\EspecialidadMapper.java` | ✏️ Reemplazar todo |
+| A3 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\repository\EspecialidadRepository.java` | ✏️ Reemplazar todo |
+| A4 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\consultorio\repository\ConsultorioRepository.java` | ✏️ Reemplazar todo |
+| A5 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\service\EspecialidadService.java` | ✏️ Reemplazar todo |
+| A6 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\service\EspecialidadServiceImpl.java` | ✏️ Reemplazar todo |
+| A7 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\controller\EspecialidadController.java` | ✏️ Reemplazar todo |
+| B1 | `polleria-frontend\src\app\features\clinica\clinica.model.ts` | ✏️ Reemplazar todo |
+| B2 | `polleria-frontend\src\app\features\clinica\clinica-service.ts` | ✏️ Reemplazar todo |
+| B3 | `polleria-frontend\src\app\features\clinica\especialidad-list.ts` | ✏️ Reemplazar todo |
+| B4 | `polleria-frontend\src\app\features\clinica\especialidad-list.html` | 📄 Nuevo |
+| B5 | `polleria-frontend\src\app\features\clinica\especialidad-form.ts` | 📄 Nuevo |
+| B6 | `polleria-frontend\src\app\features\clinica\especialidad-form.html` | 📄 Nuevo |
+| B7 | `polleria-frontend\src\app\app.routes.ts` | ✏️ Reemplazar todo |
 
 No hace falta tocar `SecurityConfig.java`: la regla `/api/v1/clinica/**` ya cubre las rutas nuevas.
-Tampoco hace falta tocar la base de datos, salvo en la Parte C.
 
 ---
 
 ## Parte A. Backend
 
-### A1. 📄 ARCHIVO NUEVO: `clinica/especialidad/dto/EspecialidadRequest.java`
+### A1. 📄 ARCHIVO NUEVO
 
-Son los datos que llegan al crear o editar. El `id` no va: lo genera la base de datos.
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\dto\EspecialidadRequest.java`
+
+Crea el archivo en esa carpeta (clic derecho en la carpeta → **New File**) y pega el código.
+
+Son los datos que llegan al crear o editar. El `id` no va, porque lo genera la base de datos. Los límites `max = 10` y `max = 100` son los mismos que tienen las columnas `CODIGO VARCHAR(10)` y `NOMBRE VARCHAR(100)`.
 
 ```java
 package pe.edu.upeu.polleria.clinica.especialidad.dto;
@@ -100,13 +113,13 @@ public class EspecialidadRequest {
 }
 ```
 
-> `max = 10` y `max = 100` son los mismos límites que tienen `CODIGO VARCHAR(10)` y
-> `NOMBRE VARCHAR(100)` en la tabla.
+### A2. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### A2. ✏️ MODIFICAR: `clinica/especialidad/mapper/EspecialidadMapper.java`
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\mapper\EspecialidadMapper.java`
 
-Reemplaza **todo** el archivo por este. Se agregan `toEntity` y `actualizar`, iguales a los de
-`ClinicaMapper`:
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agregan `toEntity` (request → entidad) y `actualizar` (copia el request sobre una entidad existente). `@Mapping(target = "id", ignore = true)` es obligatorio: el request no trae `id` y `unmappedTargetPolicy = ERROR` no deja compilar si falta.
 
 ```java
 package pe.edu.upeu.polleria.clinica.especialidad.mapper;
@@ -132,15 +145,20 @@ public interface EspecialidadMapper {
 }
 ```
 
-> `@Mapping(target = "id", ignore = true)`: el request no trae `id`. Sin esta línea, MapStruct
-> marca error al compilar porque `unmappedTargetPolicy = ERROR`.
+### A3. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### A3. ✏️ MODIFICAR: `clinica/especialidad/repository/EspecialidadRepository.java`
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\repository\EspecialidadRepository.java`
 
-Agrega **dentro** de la interfaz, que ahora está vacía, los dos métodos para validar que el
-código no se repita:
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Dos métodos para que el código no se repita. El segundo se usa al **editar**: excluye la especialidad que estás editando.
 
 ```java
+package pe.edu.upeu.polleria.clinica.especialidad.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import pe.edu.upeu.polleria.clinica.especialidad.entity.Especialidad;
+
 public interface EspecialidadRepository extends JpaRepository<Especialidad, Long> {
 
     boolean existsByCodigoIgnoreCase(String codigo);
@@ -149,27 +167,51 @@ public interface EspecialidadRepository extends JpaRepository<Especialidad, Long
 }
 ```
 
-> El segundo método se usa al **editar**: excluye la especialidad que estás editando, así puedes
-> guardarla sin cambiar su código.
+### A4. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### A4. ✏️ MODIFICAR: `clinica/consultorio/repository/ConsultorioRepository.java`
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\consultorio\repository\ConsultorioRepository.java`
 
-Agrega este método **debajo de** `boolean existsByClinicaId(Long clinicaId);`:
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agrega `existsByEspecialidades_Id` al final. Sirve para no borrar una especialidad asignada a un consultorio, porque la clave foránea lo impediría. El `_` le dice a Spring Data que entre a la lista `especialidades` y compare su `id`.
 
 ```java
+package pe.edu.upeu.polleria.clinica.consultorio.repository;
+
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import pe.edu.upeu.polleria.clinica.consultorio.entity.Consultorio;
+
+public interface ConsultorioRepository extends JpaRepository<Consultorio, Long> {
+
+    // Trae la clínica y las especialidades en la misma consulta (evita el problema N+1).
+    @Override
+    @EntityGraph(attributePaths = {"clinica", "especialidades"})
+    List<Consultorio> findAll(Sort sort);
+
+    @Override
+    @EntityGraph(attributePaths = {"clinica", "especialidades"})
+    Optional<Consultorio> findById(Long id);
+
+    boolean existsByCodigoIgnoreCase(String codigo);
+
+    boolean existsByClinicaId(Long clinicaId);
+
     // ¿Algún consultorio tiene asignada esta especialidad? (recorre la lista especialidades)
     boolean existsByEspecialidades_Id(Long especialidadId);
+}
 ```
 
-> **Por qué hace falta:** si una especialidad está asignada a un consultorio, la FK de
-> `CONSULTORIO_ESPECIALIDAD` impide borrarla. Con este método se avisa antes, con un mensaje
-> claro. El `_` en `Especialidades_Id` le dice a Spring Data que entre a la lista
-> `especialidades` y compare su `id`.
+### A5. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### A5. ✏️ MODIFICAR: `clinica/especialidad/service/EspecialidadService.java`
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\service\EspecialidadService.java`
 
-Reemplaza **todo** el archivo. Se agregan los cuatro métodos nuevos (`obtener`, `crear`,
-`actualizar` y `eliminar`):
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+La interfaz con los 5 métodos del CRUD.
 
 ```java
 package pe.edu.upeu.polleria.clinica.especialidad.service;
@@ -191,9 +233,13 @@ public interface EspecialidadService {
 }
 ```
 
-### A6. ✏️ MODIFICAR: `clinica/especialidad/service/EspecialidadServiceImpl.java`
+### A6. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-Reemplaza **todo** el archivo. Sigue la misma forma que `ClinicaServiceImpl`:
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\service\EspecialidadServiceImpl.java`
+
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+La lógica. `normalizar` deja el código en mayúsculas (`" e-06 "` se guarda como `E-06`). Un código repetido responde **409**; borrar una especialidad asignada también responde **409**, con un mensaje que la página muestra; un id inexistente responde **404**.
 
 ```java
 package pe.edu.upeu.polleria.clinica.especialidad.service;
@@ -274,18 +320,13 @@ public class EspecialidadServiceImpl implements EspecialidadService {
 }
 ```
 
-Qué hace cada parte:
+### A7. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-| Método | Qué hace |
-|---|---|
-| `normalizar` | Quita los espacios y pasa el código a mayúsculas: `" e-06 "` se guarda como `E-06` |
-| `crear` y `actualizar` | Si el código ya existe, responden **409** (`BusinessConflictException`) |
-| `eliminar` | Si la especialidad está asignada a un consultorio, responde **409** con un mensaje que la SPA muestra |
-| `buscarOFallar` | Si el id no existe, responde **404** |
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\controller\EspecialidadController.java`
 
-### A7. ✏️ MODIFICAR: `clinica/especialidad/controller/EspecialidadController.java`
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
 
-Reemplaza **todo** el archivo. Son los mismos 5 endpoints que `ClinicaController`:
+Los 5 endpoints REST: GET lista, GET por id, POST, PUT y DELETE. Son los mismos que en `ClinicaController`.
 
 ```java
 package pe.edu.upeu.polleria.clinica.especialidad.controller;
@@ -344,68 +385,116 @@ public class EspecialidadController {
 }
 ```
 
-| Método | URL | Respuesta |
-|---|---|---|
-| GET | `/api/v1/clinica/especialidades` | 200 |
-| GET | `/api/v1/clinica/especialidades/{id}` | 200 / 404 |
-| POST | `/api/v1/clinica/especialidades` | 201 / 400 / 409 |
-| PUT | `/api/v1/clinica/especialidades/{id}` | 200 / 400 / 404 / 409 |
-| DELETE | `/api/v1/clinica/especialidades/{id}` | 204 / 404 / 409 |
-
-**Comprueba que compila** desde `C:\polleriawindows\polleria-backend`:
-
-```bash
-.\mvnw.cmd -q -DskipTests package
-```
-
-Si no muestra nada, compiló bien.
-
 ---
 
 ## Parte B. Frontend (Angular)
 
-### B1. ✏️ MODIFICAR: `features/clinica/clinica.model.ts`
+### B1. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-Busca la interfaz `Especialidad` y agrega **justo debajo** la interfaz del request:
+`polleria-frontend\src\app\features\clinica\clinica.model.ts`
+
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agrega la interfaz `EspecialidadRequest` (lo que se envía al guardar). El resto del archivo queda igual.
 
 ```ts
+// Modelos del módulo clínica: lo que el backend devuelve (Response) y lo que recibe (Request).
+
+export interface Clinica {
+  id: number;
+  ruc: string;
+  razonSocial: string;
+  telefono: string | null;
+  activo: boolean;
+}
+
+export interface ClinicaRequest {
+  ruc: string;
+  razonSocial: string;
+  telefono: string | null;
+  activo: boolean;
+}
+
 export interface Especialidad {
   id: number;
   codigo: string;
   nombre: string;
 }
 
-// ⬇️ NUEVO
 export interface EspecialidadRequest {
   codigo: string;
   nombre: string;
 }
+
+export const ESTADOS_CONSULTORIO = ['DISPONIBLE', 'OCUPADO', 'MANTENIMIENTO'] as const;
+export type EstadoConsultorio = (typeof ESTADOS_CONSULTORIO)[number];
+
+// Cabecera (consultorio) con sus líneas (especialidades).
+export interface Consultorio {
+  id: number;
+  clinicaId: number;
+  clinicaRazonSocial: string;
+  codigo: string;
+  tarifaHora: number;
+  estado: EstadoConsultorio;
+  especialidades: Especialidad[];
+}
+
+export interface ConsultorioRequest {
+  clinicaId: number;
+  codigo: string;
+  tarifaHora: number;
+  estado: EstadoConsultorio;
+  especialidadIds: number[];
+}
 ```
 
-### B2. ✏️ MODIFICAR: `features/clinica/clinica-service.ts`
+### B2. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-**1) En el `import` de arriba**, agrega `EspecialidadRequest`:
+`polleria-frontend\src\app\features\clinica\clinica-service.ts`
+
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agregan `obtenerEspecialidad`, `crearEspecialidad`, `actualizarEspecialidad` y `eliminarEspecialidad`. `listarEspecialidades` conserva su nombre, así que la pantalla de **Nuevo consultorio** sigue funcionando igual.
 
 ```ts
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../../core/services/api-service';
 import {
   Clinica,
   ClinicaRequest,
   Consultorio,
   ConsultorioRequest,
   Especialidad,
-  EspecialidadRequest,   // ⬅️ NUEVO
+  EspecialidadRequest,
 } from './clinica.model';
-```
 
-**2) Debajo de** `private readonly consultorios = '/api/v1/clinica/consultorios';`, agrega:
-
-```ts
+// Un solo servicio para las tres pantallas del módulo: /api/v1/clinica/...
+@Injectable({ providedIn: 'root' })
+export class ClinicaService {
+  private readonly http = inject(HttpClient);
+  private readonly api = inject(ApiService);
+  private readonly clinicas = '/api/v1/clinica/clinicas';
+  private readonly consultorios = '/api/v1/clinica/consultorios';
   private readonly especialidades = '/api/v1/clinica/especialidades';
-```
 
-**3) Reemplaza** el método `listarEspecialidades()` por este bloque, que trae los 4 métodos nuevos:
+  listarClinicas() {
+    return this.http.get<Clinica[]>(this.api.buildUrl(this.clinicas));
+  }
+  obtenerClinica(id: number) {
+    return this.http.get<Clinica>(this.api.buildUrl(`${this.clinicas}/${id}`));
+  }
+  crearClinica(data: ClinicaRequest) {
+    return this.http.post<Clinica>(this.api.buildUrl(this.clinicas), data);
+  }
+  actualizarClinica(id: number, data: ClinicaRequest) {
+    return this.http.put<Clinica>(this.api.buildUrl(`${this.clinicas}/${id}`), data);
+  }
+  eliminarClinica(id: number) {
+    return this.http.delete<void>(this.api.buildUrl(`${this.clinicas}/${id}`));
+  }
 
-```ts
   listarEspecialidades() {
     return this.http.get<Especialidad[]>(this.api.buildUrl(this.especialidades));
   }
@@ -421,15 +510,29 @@ import {
   eliminarEspecialidad(id: number) {
     return this.http.delete<void>(this.api.buildUrl(`${this.especialidades}/${id}`));
   }
+
+  listarConsultorios() {
+    return this.http.get<Consultorio[]>(this.api.buildUrl(this.consultorios));
+  }
+  obtenerConsultorio(id: number) {
+    return this.http.get<Consultorio>(this.api.buildUrl(`${this.consultorios}/${id}`));
+  }
+  crearConsultorio(data: ConsultorioRequest) {
+    return this.http.post<Consultorio>(this.api.buildUrl(this.consultorios), data);
+  }
+  eliminarConsultorio(id: number) {
+    return this.http.delete<void>(this.api.buildUrl(`${this.consultorios}/${id}`));
+  }
+}
 ```
 
-> El formulario de **Nuevo consultorio** también usa `listarEspecialidades()`. Como el nombre del
-> método no cambia, esa pantalla sigue funcionando igual.
+### B3. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### B3. ✏️ MODIFICAR: `features/clinica/especialidad-list.ts`
+`polleria-frontend\src\app\features\clinica\especialidad-list.ts`
 
-Reemplaza **todo** el archivo. Antes tenía el HTML dentro (`template:`); ahora usa un archivo
-aparte (`templateUrl`), igual que `clinica-list.ts`:
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+La lógica del listado con el botón **Eliminar**. Antes tenía el HTML dentro (`template:`); ahora usa un archivo aparte (`templateUrl`), que creas en el paso B4.
 
 ```ts
 import { Component, DestroyRef, inject, signal } from '@angular/core';
@@ -502,9 +605,13 @@ export class EspecialidadList {
 }
 ```
 
-### B4. 📄 ARCHIVO NUEVO: `features/clinica/especialidad-list.html`
+### B4. 📄 ARCHIVO NUEVO
 
-Créalo en la misma carpeta que `especialidad-list.ts`:
+`polleria-frontend\src\app\features\clinica\especialidad-list.html`
+
+Crea el archivo en esa carpeta (clic derecho en la carpeta → **New File**) y pega el código.
+
+La tabla con el botón **+ Nueva especialidad** y, en cada fila, **Editar** y **Eliminar**.
 
 ```html
 <div class="page-heading">
@@ -552,9 +659,13 @@ Créalo en la misma carpeta que `especialidad-list.ts`:
 </div>
 ```
 
-### B5. 📄 ARCHIVO NUEVO: `features/clinica/especialidad-form.ts`
+### B5. 📄 ARCHIVO NUEVO
 
-Es una sola pantalla para **crear** (`/nuevo`) y **editar** (`/:id/editar`), igual que `clinica-form.ts`:
+`polleria-frontend\src\app\features\clinica\especialidad-form.ts`
+
+Crea el archivo en esa carpeta (clic derecho en la carpeta → **New File**) y pega el código.
+
+Un solo formulario para **crear** (`/nuevo`) y **editar** (`/:id/editar`). `markAllAsTouched()` hace que se vean los errores debajo de cada campo al pulsar **Guardar**.
 
 ```ts
 import { Component, DestroyRef, inject, signal } from '@angular/core';
@@ -646,7 +757,13 @@ export class EspecialidadForm {
 }
 ```
 
-### B6. 📄 ARCHIVO NUEVO: `features/clinica/especialidad-form.html`
+### B6. 📄 ARCHIVO NUEVO
+
+`polleria-frontend\src\app\features\clinica\especialidad-form.html`
+
+Crea el archivo en esa carpeta (clic derecho en la carpeta → **New File**) y pega el código.
+
+La pantalla del formulario. `@if (!loading())` muestra el formulario solo cuando ya cargó la especialidad.
 
 ```html
 <h1>{{ id() === null ? 'Nueva especialidad' : 'Editar especialidad' }}</h1>
@@ -681,20 +798,191 @@ export class EspecialidadForm {
 }
 ```
 
-> `@if (!loading())`: el formulario aparece solo cuando ya cargó la especialidad. Si no, lo que
-> escribas antes de que lleguen los datos se borraría al llegar.
+### B7. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### B7. ✏️ MODIFICAR: `app.routes.ts`
+`polleria-frontend\src\app\app.routes.ts`
 
-Busca la línea de la ruta `clinica/especialidades` (la del listado). **Debajo de ella**, agrega
-estas dos rutas:
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Son todas las rutas del sistema más las dos nuevas: `clinica/especialidades/nuevo` y `clinica/especialidades/:id/editar`.
+
+> ⚠️ Este archivo tiene las rutas de **todo** el sistema. Pega el contenido completo; no borres ni dejes nada a medias.
 
 ```ts
+import { authGuard, authChildGuard } from './core/guards/auth-guard';
+import { rolGuard,inicioInternoGuard,publicoGuard } from './core/guards/rol-guard';
+import { INTERNOS, OPERATIVOS } from './core/auth/auth-service';
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {path:'inicio',canActivate:[publicoGuard],title:'Pollería Neyos | Pollos y Parrillas',loadComponent:()=>import('./core/inicio/inicio-publico').then(m=>m.InicioPublico)},
+  {path:'destacados',canActivate:[publicoGuard],title:'Destacados de la carta | Polleria Neyos',data:{seccion:'destacados'},loadComponent:()=>import('./core/inicio/inicio-publico').then(m=>m.InicioPublico)},
+  {path:'promociones',canActivate:[publicoGuard],title:'Promociones | Polleria Neyos',data:{seccion:'promociones'},loadComponent:()=>import('./core/inicio/inicio-publico').then(m=>m.InicioPublico)},
+  {path:'',pathMatch:'full',redirectTo:'inicio'},
+  {path:'acceso',canActivate:[publicoGuard],loadComponent:()=>import('./features/publico/acceso').then(m=>m.Acceso)},
+  {
+    path: 'auth/callback',
+    loadComponent: () => import('./core/auth/auth-callback').then((m) => m.AuthCallback),
+  },
+  {
+    path: 'sin-permiso',
+    loadComponent: () => import('./core/auth/sin-permiso').then((m) => m.SinPermiso),
+  },
+  {
+    path: 'interno',
+    canActivate: [authGuard, rolGuard(...INTERNOS)],
+    canActivateChild: [authChildGuard, rolGuard(...INTERNOS)],
+    loadComponent: () => import('./core/layout/interno/interno').then((m) => m.Interno),
+    children: [
+      {path:'ubicacion',redirectTo:'portada',pathMatch:'full'},
+      {path:'portada',canActivate:[rolGuard('ADMINISTRADOR')],title:'Local y página de inicio | Pollería Neyos',loadComponent:()=>import('./features/contenido/banners').then(m=>m.Banners)},
+      {path:'caja',canActivate:[rolGuard('CAJERO','ADMINISTRADOR')],loadComponent:()=>import('./features/operacion/paneles').then(m=>m.Caja)},
+      {path:'operaciones',canActivate:[rolGuard('OPERACIONES','ADMINISTRADOR')],loadComponent:()=>import('./features/operacion/paneles').then(m=>m.Operaciones)},
+      {path:'mesero',canActivate:[rolGuard('MESERO','ADMINISTRADOR')],loadComponent:()=>import('./features/operacion/paneles').then(m=>m.Mesero)},
+      // Módulo clínica (examen final práctico v7): solo ADMINISTRADOR.
+      {path:'clinica',redirectTo:'clinica/clinicas',pathMatch:'full'},
+      {path:'clinica/clinicas',canActivate:[rolGuard('ADMINISTRADOR')],title:'Clínicas | Pollería Neyos',loadComponent:()=>import('./features/clinica/clinica-list').then(m=>m.ClinicaList)},
+      {path:'clinica/clinicas/nuevo',canActivate:[rolGuard('ADMINISTRADOR')],title:'Nueva clínica | Pollería Neyos',loadComponent:()=>import('./features/clinica/clinica-form').then(m=>m.ClinicaForm)},
+      {path:'clinica/clinicas/:id/editar',canActivate:[rolGuard('ADMINISTRADOR')],title:'Editar clínica | Pollería Neyos',loadComponent:()=>import('./features/clinica/clinica-form').then(m=>m.ClinicaForm)},
+      {path:'clinica/especialidades',canActivate:[rolGuard('ADMINISTRADOR')],title:'Especialidades | Pollería Neyos',loadComponent:()=>import('./features/clinica/especialidad-list').then(m=>m.EspecialidadList)},
       {path:'clinica/especialidades/nuevo',canActivate:[rolGuard('ADMINISTRADOR')],title:'Nueva especialidad | Pollería Neyos',loadComponent:()=>import('./features/clinica/especialidad-form').then(m=>m.EspecialidadForm)},
       {path:'clinica/especialidades/:id/editar',canActivate:[rolGuard('ADMINISTRADOR')],title:'Editar especialidad | Pollería Neyos',loadComponent:()=>import('./features/clinica/especialidad-form').then(m=>m.EspecialidadForm)},
-```
+      {path:'clinica/consultorios',canActivate:[rolGuard('ADMINISTRADOR')],title:'Consultorios | Pollería Neyos',loadComponent:()=>import('./features/clinica/consultorio-list').then(m=>m.ConsultorioList)},
+      {path:'clinica/consultorios/nuevo',canActivate:[rolGuard('ADMINISTRADOR')],title:'Nuevo consultorio | Pollería Neyos',loadComponent:()=>import('./features/clinica/consultorio-form').then(m=>m.ConsultorioForm)},
+      {path:'clinica/consultorios/:id',canActivate:[rolGuard('ADMINISTRADOR')],title:'Consultorio | Pollería Neyos',loadComponent:()=>import('./features/clinica/consultorio-detalle').then(m=>m.ConsultorioDetalle)},
+      {
+        path: 'reportes',
+        canActivate: [rolGuard('ADMINISTRADOR')],
+        title: 'Reportes | Pollería Neyos',
+        loadComponent: () => import('./features/reportes/reportes').then((m) => m.Reportes),
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        canActivate:[inicioInternoGuard],
+        title: 'Portal interno | Pollería Neyos',
+        loadComponent: () => import('./core/inicio/inicio-interno').then((m) => m.InicioInterno),
+      },
+      {
+        path: 'categorias',
+        canActivate: [rolGuard(...OPERATIVOS)],
+        loadComponent: () =>
+          import('./features/catalogo/categoria/categoria-list').then((m) => m.CategoriaList),
+      },
+      {
+        path: 'categorias/nuevo',
+        canActivate: [rolGuard('ADMINISTRADOR')],
+        loadComponent: () =>
+          import('./features/catalogo/categoria/categoria-form').then((m) => m.CategoriaForm),
+      },
+      {
+        path: 'categorias/:id/editar',
+        canActivate: [rolGuard('ADMINISTRADOR')],
+        loadComponent: () =>
+          import('./features/catalogo/categoria/categoria-form').then((m) => m.CategoriaForm),
+      },
+      {
+        path: 'productos',
+        canActivate: [rolGuard(...OPERATIVOS)],
+        loadComponent: () =>
+          import('./features/catalogo/producto/producto-list').then((m) => m.ProductoList),
+      },
+      {
+        path: 'productos/nuevo',
+        canActivate: [rolGuard('ADMINISTRADOR')],
+        loadComponent: () =>
+          import('./features/catalogo/producto/producto-form').then((m) => m.ProductoForm),
+      },
+      {
+        path: 'productos/:id/editar',
+        canActivate: [rolGuard('ADMINISTRADOR')],
+        loadComponent: () =>
+          import('./features/catalogo/producto/producto-form').then((m) => m.ProductoForm),
+      },
+      {
+        path: 'clientes',
+        canActivate: [rolGuard(...OPERATIVOS)],
+        loadComponent: () =>
+          import('./features/clientes/cliente/cliente-list').then((m) => m.ClienteList),
+      },
+      {
+        path: 'clientes/nuevo',
+        canActivate: [rolGuard(...OPERATIVOS)],
+        loadComponent: () =>
+          import('./features/clientes/cliente/cliente-form').then((m) => m.ClienteForm),
+      },
+      {
+        path: 'clientes/:id/editar',
+        canActivate: [rolGuard(...OPERATIVOS)],
+        loadComponent: () =>
+          import('./features/clientes/cliente/cliente-form').then((m) => m.ClienteForm),
+      },
+      {
+        path: 'pedidos',
+        canActivate: [rolGuard(...OPERATIVOS)],
+        title: 'Pedidos | Pollería Neyos',
+        loadComponent: () => import('./features/pedidos/pedido-list').then((m) => m.PedidoList),
+      },
+      {
+        path: 'pedidos/nuevo',
+        canActivate: [rolGuard(...OPERATIVOS)],
+        title: 'Nuevo pedido | Pollería Neyos',
+        loadComponent: () => import('./features/pedidos/pedido-form').then((m) => m.PedidoForm),
+      },
+      {
+        path: 'pedidos/:id',
+        canActivate: [rolGuard(...OPERATIVOS)],
+        title: 'Detalle del pedido | Pollería Neyos',
+        loadComponent: () =>
+          import('./features/pedidos/pedido-detalle').then((m) => m.PedidoDetalle),
+      },
 
-Deben quedar **dentro** del bloque `children` de `interno`, junto a las otras rutas `clinica/...`.
+    ],
+  },
+  {
+    path: '',
+    canActivateChild: [publicoGuard],
+    loadComponent: () => import('./core/layout/publico/publico').then((m) => m.Publico),
+    children: [
+      {
+        path: 'catalogo',
+        loadComponent: () =>
+          import('./features/publico/catalogo-publico').then((m) => m.CatalogoPublico),
+      },
+      {
+        path: 'carrito',
+        loadComponent: () => import('./features/publico/carrito').then((m) => m.Carrito),
+      },
+      {
+        path: 'perfil',
+        canActivate: [authGuard, rolGuard('CLIENTE')],
+        loadComponent: () => import('./features/publico/perfil').then((m) => m.Perfil),
+      },
+      {
+        path: 'checkout',
+        loadComponent: () => import('./features/publico/checkout').then((m) => m.Checkout),
+      },
+      {path:'seguimiento/:id',data:{web:true},loadComponent:()=>import('./features/publico/mi-pedido').then(m=>m.MiPedido)},
+      {
+        path: 'mis-pedidos',
+        canActivate: [authGuard, rolGuard('CLIENTE')],
+        loadComponent: () => import('./features/publico/mis-pedidos').then((m) => m.MisPedidos),
+      },
+      {
+        path: 'mis-pedidos/:id',
+        canActivate: [authGuard, rolGuard('CLIENTE')],
+        loadComponent: () => import('./features/publico/mi-pedido').then((m) => m.MiPedido),
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'inicio',
+      },
+    ],
+  },
+  { path: '**', redirectTo: '' },
+];
+```
 
 ---
 
@@ -707,7 +995,8 @@ Deben quedar **dentro** del bloque `children` de `interno`, junto a las otras ru
    docker compose --env-file .env.prodtest -f compose.prod.yml -f compose.prodtest.yml up -d --build --wait
    ```
 
-2. Entra con `admin@polleria.pe` y abre **Clínica → Especialidades**.
+2. Entra con `admin@polleria.pe` y abre **Clínica → Especialidades**. Si no ves el botón
+   **+ Nueva especialidad**, pulsa `Ctrl + Shift + R`.
 
 | Prueba | Resultado esperado |
 |---|---|
@@ -722,10 +1011,27 @@ Deben quedar **dentro** del bloque `children` de `interno`, junto a las otras ru
 
 ## Parte C (opcional). Columna "Activa", como en Clínicas
 
-La tabla `ESPECIALIDADES` del examen **no tiene** columna `ACTIVO`. Para agregarla hay que
-cambiar la base de datos y 7 archivos. Haz primero las partes A y B.
+Hazla **solo después** de que A y B funcionen. La tabla `ESPECIALIDADES` del examen no tiene
+columna `ACTIVO`, así que primero se agrega en la base de datos (C1) y luego se reemplazan
+7 archivos (C2 a C8). Varios son los mismos de la Parte B, ahora con `activo`.
+
+| # | Archivo | Acción |
+|---|---|---|
+| C1 | Base de datos | Ejecutar un `ALTER TABLE` |
+| C2 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\entity\Especialidad.java` | ✏️ Reemplazar todo |
+| C3 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\dto\EspecialidadRequest.java` | ✏️ Reemplazar todo |
+| C4 | `polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\dto\EspecialidadResponse.java` | ✏️ Reemplazar todo |
+| C5 | `polleria-frontend\src\app\features\clinica\clinica.model.ts` | ✏️ Reemplazar todo |
+| C6 | `polleria-frontend\src\app\features\clinica\especialidad-list.html` | ✏️ Reemplazar todo |
+| C7 | `polleria-frontend\src\app\features\clinica\especialidad-form.ts` | ✏️ Reemplazar todo |
+| C8 | `polleria-frontend\src\app\features\clinica\especialidad-form.html` | ✏️ Reemplazar todo |
 
 ### C1. Base de datos: agregar la columna
+
+> **Haz C1 antes que todo lo demás.** El backend revisa al arrancar que la entidad coincida con la
+> tabla (`ddl-auto: validate`). Si la entidad tiene `activo` y la tabla no, el backend **no arranca**.
+
+En PowerShell:
 
 ```powershell
 $DB = 'polleria-prodtest-postgres-1'
@@ -736,126 +1042,394 @@ ALTER TABLE EXA_CLINICA.ESPECIALIDADES
 '@ | docker exec -i $DB psql -U polleria -d polleria -v ON_ERROR_STOP=1
 ```
 
-Las 5 especialidades que ya existen quedan con `ACTIVO = 1` gracias al `DEFAULT 1`.
+Debe responder `ALTER TABLE`. Las 5 especialidades que ya existen quedan con `ACTIVO = 1` gracias
+al `DEFAULT 1`.
 
-> Para que una instalación nueva ya tenga la columna, agrega también esa sentencia al final de
-> `polleria-backend/scripts/02-clinica.sql`.
->
-> **Haz C1 antes de levantar el backend con C2.** Con `ddl-auto: validate`, si la entidad tiene
-> `activo` y la tabla no, el backend **no arranca**.
+> Para que una instalación nueva ya tenga la columna, pega también esa sentencia `ALTER TABLE` al
+> final de `polleria-backend\scripts\02-clinica.sql`.
 
-### C2. ✏️ `clinica/especialidad/entity/Especialidad.java`
+### C2. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-**Imports** (arriba, junto a los demás):
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\entity\Especialidad.java`
+
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agrega el campo `activo`, igual que en `Clinica`: en la base es `SMALLINT` 0/1 y en Java es `Boolean`.
 
 ```java
+package pe.edu.upeu.polleria.clinica.especialidad.entity;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.NumericBooleanConverter;
 import org.hibernate.type.SqlTypes;
-```
 
-**Campo nuevo**, debajo de `private String nombre;`. Es idéntico al de `Clinica`:
+@Entity
+@Table(name = "ESPECIALIDADES", schema = "EXA_CLINICA")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Especialidad {
 
-```java
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "CODIGO", nullable = false, length = 10, unique = true)
+    private String codigo;
+
+    @Column(name = "NOMBRE", nullable = false, length = 100)
+    private String nombre;
+
+    // La columna es SMALLINT 0/1; en Java se trabaja como Boolean (igual que en Clinica).
     @Convert(converter = NumericBooleanConverter.class)
     @JdbcTypeCode(SqlTypes.SMALLINT)
     @Column(name = "ACTIVO", nullable = false)
     private Boolean activo = true;
+}
 ```
 
-### C3. ✏️ `clinica/especialidad/dto/EspecialidadRequest.java`
+### C3. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-Agrega el import `import jakarta.validation.constraints.NotNull;` y, debajo de `nombre`, este campo:
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\dto\EspecialidadRequest.java`
+
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agrega `activo` con `@NotNull`.
 
 ```java
+package pe.edu.upeu.polleria.clinica.especialidad.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class EspecialidadRequest {
+
+    @NotBlank(message = "El código es obligatorio")
+    @Size(max = 10, message = "El código admite hasta 10 caracteres")
+    private String codigo;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 100, message = "El nombre admite hasta 100 caracteres")
+    private String nombre;
+
     @NotNull
     private Boolean activo;
+}
 ```
 
-### C4. ✏️ `clinica/especialidad/dto/EspecialidadResponse.java`
+### C4. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-Agrega este campo debajo de `private String nombre;`:
+`polleria-backend\src\main\java\pe\edu\upeu\polleria\clinica\especialidad\dto\EspecialidadResponse.java`
+
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agrega `activo`. El mapper **no cambia**: MapStruct copia el campo solo, porque se llama igual.
 
 ```java
+package pe.edu.upeu.polleria.clinica.especialidad.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class EspecialidadResponse {
+    private Long id;
+    private String codigo;
+    private String nombre;
     private Boolean activo;
+}
 ```
 
-El mapper **no cambia**: MapStruct copia `activo` solo, porque se llama igual en la entidad y en
-los DTO.
+### C5. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### C5. ✏️ `features/clinica/clinica.model.ts`
+`polleria-frontend\src\app\features\clinica\clinica.model.ts`
 
-Agrega `activo: boolean;` en **las dos** interfaces:
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agrega `activo: boolean` en `Especialidad` y en `EspecialidadRequest`.
 
 ```ts
+// Modelos del módulo clínica: lo que el backend devuelve (Response) y lo que recibe (Request).
+
+export interface Clinica {
+  id: number;
+  ruc: string;
+  razonSocial: string;
+  telefono: string | null;
+  activo: boolean;
+}
+
+export interface ClinicaRequest {
+  ruc: string;
+  razonSocial: string;
+  telefono: string | null;
+  activo: boolean;
+}
+
 export interface Especialidad {
   id: number;
   codigo: string;
   nombre: string;
-  activo: boolean;   // ⬅️ NUEVO
+  activo: boolean;
 }
 
 export interface EspecialidadRequest {
   codigo: string;
   nombre: string;
-  activo: boolean;   // ⬅️ NUEVO
+  activo: boolean;
+}
+
+export const ESTADOS_CONSULTORIO = ['DISPONIBLE', 'OCUPADO', 'MANTENIMIENTO'] as const;
+export type EstadoConsultorio = (typeof ESTADOS_CONSULTORIO)[number];
+
+// Cabecera (consultorio) con sus líneas (especialidades).
+export interface Consultorio {
+  id: number;
+  clinicaId: number;
+  clinicaRazonSocial: string;
+  codigo: string;
+  tarifaHora: number;
+  estado: EstadoConsultorio;
+  especialidades: Especialidad[];
+}
+
+export interface ConsultorioRequest {
+  clinicaId: number;
+  codigo: string;
+  tarifaHora: number;
+  estado: EstadoConsultorio;
+  especialidadIds: number[];
 }
 ```
 
-### C6. ✏️ `features/clinica/especialidad-list.html`
+### C6. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-En `<thead>`, **debajo de** `<th scope="col">Nombre</th>`:
+`polleria-frontend\src\app\features\clinica\especialidad-list.html`
+
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agrega la columna **Activa** (Sí/No).
 
 ```html
+<div class="page-heading">
+  <h1>Especialidades</h1>
+  <a matButton="filled" routerLink="/interno/clinica/especialidades/nuevo">+ Nueva especialidad</a>
+</div>
+
+@if (aviso()) {
+  <p role="status" class="notice">{{ aviso() }}</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+}
+@if (loading()) {
+  <p role="status">Cargando especialidades…</p>
+}
+
+<div class="table-region" [attr.aria-busy]="loading()">
+  <table class="data-table">
+    <caption class="sr-only">Listado de especialidades</caption>
+    <thead>
+      <tr>
+        <th scope="col">Código</th>
+        <th scope="col">Nombre</th>
         <th scope="col">Activa</th>
-```
-
-En cada fila, **debajo de** `<td data-label="Nombre">{{ item.nombre }}</td>`:
-
-```html
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of datos(); track item.id) {
+        <tr>
+          <td data-label="Código">{{ item.codigo }}</td>
+          <td data-label="Nombre">{{ item.nombre }}</td>
           <td data-label="Activa">{{ item.activo ? 'Sí' : 'No' }}</td>
+          <td data-label="Acciones" class="row-actions">
+            <a matButton [routerLink]="['/interno/clinica/especialidades', item.id, 'editar']">Editar</a>
+            <button matButton class="danger" type="button" (click)="eliminar(item)">Eliminar</button>
+          </td>
+        </tr>
+      } @empty {
+        @if (!loading() && !error()) {
+          <tr><td class="empty" colspan="4">No hay especialidades registradas.</td></tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
 ```
 
-Y cambia `colspan="3"` por `colspan="4"` en la fila de "No hay especialidades registradas".
+### C7. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### C7. ✏️ `features/clinica/especialidad-form.ts`
+`polleria-frontend\src\app\features\clinica\especialidad-form.ts`
 
-1. Agrega el import:
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
 
-   ```ts
-   import { MatCheckboxModule } from '@angular/material/checkbox';
-   ```
+Se agrega `activo` al formulario, a la carga al editar y al guardar, y se importa `MatCheckboxModule`.
 
-2. Agrega `MatCheckboxModule` al final de `imports: [...]` dentro de `@Component`.
+```ts
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { mensajeHttp } from '../../shared/http-error';
+import { textoObligatorio } from '../../shared/form-validation';
+import { ClinicaService } from './clinica-service';
+import { EspecialidadRequest } from './clinica.model';
 
-3. En el formulario, debajo de `nombre`:
+// La misma pantalla sirve para crear (/nuevo) y editar (/:id/editar).
+@Component({
+  selector: 'app-especialidad-form',
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatCheckboxModule],
+  templateUrl: './especialidad-form.html',
+})
+export class EspecialidadForm {
+  private readonly fb = inject(FormBuilder);
+  private readonly service = inject(ClinicaService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly id = signal<number | null>(null);
+  readonly loading = signal(false);
+  readonly guardando = signal(false);
+  readonly error = signal('');
 
-   ```ts
-       activo: [true],
-   ```
+  readonly form = this.fb.nonNullable.group({
+    codigo: ['', [textoObligatorio, Validators.maxLength(10)]],
+    nombre: ['', [textoObligatorio, Validators.maxLength(100)]],
+    activo: [true],
+  });
 
-4. En `patchValue` del constructor:
+  constructor() {
+    const param = this.route.snapshot.paramMap.get('id');
+    if (param === null) return; // modo crear
+    const id = Number(param);
+    this.id.set(id);
+    this.loading.set(true);
+    this.service
+      .obtenerEspecialidad(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (e) => {
+          this.form.patchValue({ codigo: e.codigo, nombre: e.nombre, activo: e.activo });
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.loading.set(false);
+          this.error.set(mensajeHttp(err));
+        },
+      });
+  }
 
-   ```ts
-   this.form.patchValue({ codigo: e.codigo, nombre: e.nombre, activo: e.activo });
-   ```
+  mensaje(campo: 'codigo' | 'nombre'): string {
+    const control = this.form.controls[campo];
+    if (!control.touched || !control.errors) return '';
+    if (control.errors['maxlength']) return `Máximo ${control.errors['maxlength'].requiredLength} caracteres`;
+    return campo === 'codigo' ? 'El código es obligatorio' : 'El nombre es obligatorio';
+  }
 
-5. En `guardar()`, donde se arma `data`:
+  guardar() {
+    if (this.guardando()) return;
+    this.error.set('');
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); // muestra los errores debajo de cada campo
+      return;
+    }
+    const v = this.form.getRawValue();
+    const data: EspecialidadRequest = {
+      codigo: v.codigo.trim().toUpperCase(),
+      nombre: v.nombre.trim(),
+      activo: v.activo,
+    };
+    this.guardando.set(true);
+    const id = this.id();
+    const peticion =
+      id === null ? this.service.crearEspecialidad(data) : this.service.actualizarEspecialidad(id, data);
+    peticion.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () =>
+        this.router.navigate(['/interno/clinica/especialidades'], {
+          state: { aviso: id === null ? 'Especialidad creada.' : 'Cambios guardados.' },
+        }),
+      error: (err) => {
+        this.guardando.set(false);
+        this.error.set(mensajeHttp(err));
+      },
+    });
+  }
+}
+```
 
-   ```ts
-   const data: EspecialidadRequest = { codigo: v.codigo.trim().toUpperCase(), nombre: v.nombre.trim(), activo: v.activo };
-   ```
+### C8. ✏️ REEMPLAZAR TODO EL ARCHIVO
 
-### C8. ✏️ `features/clinica/especialidad-form.html`
+`polleria-frontend\src\app\features\clinica\especialidad-form.html`
 
-**Justo antes de** `<div class="form-actions">`:
+Abre el archivo, selecciona todo (`Ctrl + A`), bórralo y pega este código.
+
+Se agrega la casilla **Activa**.
 
 ```html
+<h1>{{ id() === null ? 'Nueva especialidad' : 'Editar especialidad' }}</h1>
+@if (loading()) {
+  <p role="status">Cargando especialidad…</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+}
+
+@if (!loading()) {
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="resource-form" novalidate>
+    <mat-form-field appearance="outline">
+      <mat-label>Código</mat-label>
+      <input matInput formControlName="codigo" maxlength="10" placeholder="E-06" />
+      <mat-error>× {{ mensaje('codigo') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" maxlength="100" />
+      <mat-error>× {{ mensaje('nombre') }}</mat-error>
+    </mat-form-field>
+
     <mat-checkbox formControlName="activo">Activa</mat-checkbox>
+
+    <div class="form-actions">
+      <a matButton routerLink="/interno/clinica/especialidades">Cancelar</a>
+      <button matButton="filled" type="submit" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+}
 ```
 
-**Prueba:** edita **Nutricion**, desmarca **Activa** y guarda. En el listado debe decir **No**.
+**Prueba:** reconstruye con el mismo comando de [Probar](#probar), edita **Nutricion**, desmarca
+**Activa** y guarda. En el listado debe decir **No**.
 
 ---
 
@@ -863,9 +1437,11 @@ Y cambia `colspan="3"` por `colspan="4"` en la fila de "No hay especialidades re
 
 | Síntoma | Causa |
 |---|---|
-| Al compilar el backend: `Unmapped target property: "id"` | Falta `@Mapping(target = "id", ignore = true)` en `toEntity` o en `actualizar` |
-| Al compilar el backend: `No property 'especialidades' found` | El método de A4 se escribió distinto. Debe ser exactamente `existsByEspecialidades_Id` |
+| Al compilar: `cannot find symbol ... EspecialidadRequest` | Falta el archivo nuevo de A1, o está en otra carpeta |
+| Al compilar: `Unmapped target property: "id"` | El mapper de A2 no quedó completo |
+| Al compilar: `No property 'especialidades' found` | El método de A4 se escribió distinto: debe ser exactamente `existsByEspecialidades_Id` |
 | El backend no arranca: `missing column [activo]` | Hiciste C2 sin hacer C1 (falta la columna en la tabla) |
-| Al pulsar "+ Nueva especialidad" vuelve al inicio | Faltan las rutas de B7 o quedaron fuera de `children` |
-| `NG8001: 'mat-checkbox' is not a known element` | Falta `MatCheckboxModule` en `imports` (C7) |
-| Eliminar no hace nada | Falta `MatDialog` o `ConfirmarEliminacion` en `especialidad-list.ts` |
+| Al pulsar "+ Nueva especialidad" vuelve al inicio | El archivo `app.routes.ts` de B7 no quedó completo |
+| `NG2008: Could not find template file './especialidad-list.html'` | Falta el archivo nuevo de B4 |
+| `NG8001: 'mat-checkbox' is not a known element` | El archivo de C7 no quedó completo |
+| El navegador sigue mostrando la pantalla vieja | No reconstruiste, o falta `Ctrl + Shift + R` |
