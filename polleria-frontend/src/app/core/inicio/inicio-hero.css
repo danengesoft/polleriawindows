@@ -3,7 +3,7 @@
   min-height: 570px;
   display: flex;
   align-items: center;
-  background: #100d09 url('/images/la-brava/inicio-hero.png') 64% 55% / cover no-repeat;
+  background: #100d09 url('/images/polleria-neyos/inicio-hero.png') 64% 55% / cover no-repeat;
 }
 .premium-hero:before {
   content: '';

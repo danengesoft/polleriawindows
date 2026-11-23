@@ -19,7 +19,7 @@ public class EventosService {
   private final ApplicationEventPublisher publisher;
   private final AtomicLong secuencia = new AtomicLong();
   private final ScheduledExecutorService reloj = Executors.newSingleThreadScheduledExecutor(r -> {
-    Thread t = new Thread(r, "la-brava-sse");
+    Thread t = new Thread(r, "polleria-neyos-sse");
     t.setDaemon(true);
     return t;
   });

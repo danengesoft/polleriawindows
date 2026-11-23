@@ -6,6 +6,7 @@
   <p role="alert" class="error">{{ error() }}</p>
 }
 
+@if (!loading()) {
 <form [formGroup]="form" (ngSubmit)="guardar()" class="resource-form" novalidate>
   <mat-form-field appearance="outline">
     <mat-label>RUC</mat-label>
@@ -34,3 +35,4 @@
     </button>
   </div>
 </form>
+}

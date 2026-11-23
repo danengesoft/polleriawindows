@@ -1,5 +1,9 @@
 {
   "java.compile.nullAnalysis.mode": "automatic",
   "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 1000
+  "files.autoSaveDelay": 1000,
+  // Los scripts son de PostgreSQL: que VS Code no los revise con las reglas de Oracle (PL/SQL).
+  "files.associations": {
+    "**/polleria-backend/scripts/*.sql": "sql"
+  }
 }

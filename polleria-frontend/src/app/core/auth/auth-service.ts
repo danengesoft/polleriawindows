@@ -96,7 +96,7 @@ export class AuthService {
         code_challenge: challenge,
         code_challenge_method: 'S256',
       });
-      if (registro && !transporte) sessionStorage.setItem('la_brava_registro', '1');
+      if (registro && !transporte) sessionStorage.setItem('polleria_neyos_registro', '1');
       (transporte || this.redirigir)(`${environment.keycloak.issuer}/protocol/openid-connect/${registro ? 'registrations' : 'auth'}?${params}`);
     } catch {
       this.loginEnCurso = false;
@@ -105,7 +105,7 @@ export class AuthService {
   }
   iniciarLoginVentana(registro = false, signal?: AbortSignal): Promise<boolean> {
     let ventana: Window | null = null;
-    return this.iniciarLoginCanal(registro, url => ventana = window.open(url, 'la-brava-oidc-' + generarState(), 'popup,width=520,height=740'), () => ventana?.close(), () => !!ventana?.closed, signal);
+    return this.iniciarLoginCanal(registro, url => ventana = window.open(url, 'polleria-neyos-oidc-' + generarState(), 'popup,width=520,height=740'), () => ventana?.close(), () => !!ventana?.closed, signal);
   }
   iniciarLoginMarco(marco: HTMLIFrameElement, registro = false, signal?: AbortSignal): Promise<boolean> {
     if (new URL(environment.keycloak.issuer).origin !== location.origin) { this.error.set('Utiliza la ventana segura para este acceso.'); return Promise.resolve(false); }
@@ -113,13 +113,13 @@ export class AuthService {
   }
   private iniciarLoginCanal(registro: boolean, abrir: (url: string) => Window | null, cerrar: () => void, cerrado: () => boolean, signal?: AbortSignal): Promise<boolean> {
     if (this.loginEnCurso || signal?.aborted) return Promise.resolve(false);
-    this.error.set(''); sessionStorage.removeItem('la_brava_registro');
+    this.error.set(''); sessionStorage.removeItem('polleria_neyos_registro');
     return new Promise(resolve => {
       let ventana: Window | null = null; let finalizado = false, intercambiando = false; const solicitud = new AbortController();
       const terminar = (ok: boolean, mensaje = '') => { if (finalizado) return; finalizado = true; if (!ok) solicitud.abort(); window.removeEventListener('message', recibir); signal?.removeEventListener('abort', cancelar); clearInterval(reloj); clearTimeout(limite); this.loginEnCurso = false; this.limpiarFlujo(); if (mensaje) this.error.set(mensaje); try { cerrar(); } catch { } resolve(ok); };
       const cancelar = () => terminar(false);
       const recibir = async (event: MessageEvent) => {
-        if (!ventana || finalizado || intercambiando || event.origin !== location.origin || event.source !== ventana || event.data?.tipo !== 'la-brava-auth-callback') return;
+        if (!ventana || finalizado || intercambiando || event.origin !== location.origin || event.source !== ventana || event.data?.tipo !== 'polleria-neyos-auth-callback') return;
         const { code, state, error } = event.data;
         if (typeof state !== 'string' || state !== sessionStorage.getItem(AUTH_KEYS.state)) return;
         if (error || typeof code !== 'string' || !code) { terminar(false, 'No se completó el acceso. Puedes intentarlo nuevamente.'); return; }
@@ -129,7 +129,7 @@ export class AuthService {
       window.addEventListener('message', recibir); signal?.addEventListener('abort', cancelar, { once: true });
       const reloj = setInterval(() => { if (ventana && cerrado() && !intercambiando) terminar(false, 'Se cerró la ventana de acceso.'); }, 400);
       const limite = setTimeout(() => { if (!intercambiando) terminar(false, 'El acceso venció. Intenta nuevamente.'); }, 180000);
-      void this.iniciarLogin(location.pathname + location.search, registro, url => { ventana = abrir(url); if (!ventana) this.error.set('Permite la ventana de acceso de La Brava y vuelve a intentarlo.'); }).then(() => { if (this.error()) terminar(false, this.error()); }).catch(() => terminar(false, 'No se pudo abrir el acceso.'));
+      void this.iniciarLogin(location.pathname + location.search, registro, url => { ventana = abrir(url); if (!ventana) this.error.set('Permite la ventana de acceso de Pollería Neyos y vuelve a intentarlo.'); }).then(() => { if (this.error()) terminar(false, this.error()); }).catch(() => terminar(false, 'No se pudo abrir el acceso.'));
     });
   }
   async completarLogin(code: string, state: string, signal?: AbortSignal): Promise<void> {
