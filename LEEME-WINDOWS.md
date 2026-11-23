@@ -32,7 +32,7 @@ falte):
 3. Prepara la configuración del login (Keycloak).
 4. Carga las imágenes desde `polleria-imagenes.tar` si está, o compila el proyecto.
 5. Levanta PostgreSQL y espera a que esté listo.
-6. Crea las tablas de la pollería y del módulo clínica (solo la primera vez).
+6. Crea las tablas (solo la primera vez).
 7. Levanta Keycloak, backend y frontend.
 8. Crea los usuarios de prueba y abre el navegador en **http://127.0.0.1:18080**.
 
@@ -115,25 +115,21 @@ docker compose --env-file .env.prodtest -f compose.prod.yml -f compose.prodtest.
 ## Base de datos: PostgreSQL
 
 Desde esta versión el sistema usa **PostgreSQL 17** (contenedor `polleria-prodtest-postgres-1`),
-con la base `polleria` y el usuario `polleria`. Tiene dos esquemas:
+con la base `polleria` y el usuario `polleria`. Las tablas están en el esquema `polleria`
+(script `polleria-backend\scripts\01-polleria.sql`).
 
-| Esquema | Contenido | Script |
-|---|---|---|
-| `polleria` | Tablas de la pollería | `polleria-backend\scripts\01-polleria.sql` |
-| `exa_clinica` | Módulo clínica (examen v7) | `polleria-backend\scripts\02-clinica.sql` |
-
-`iniciar.bat` crea los dos esquemas la primera vez. Si venías de la versión con Oracle,
+`iniciar.bat` crea las tablas la primera vez. Si venías de la versión con Oracle,
 `iniciar.bat` agrega sola la clave `POLLERIA_DB_PASSWORD` a `.env.prodtest` y apaga el
 contenedor de Oracle. **Los datos de Oracle no se copian**: la base nueva empieza vacía.
 Cuando ya no los necesites, borra el volumen viejo en Docker Desktop → Volumes
 (`polleria-prodtest_oracle-data`).
 
-Listar las tablas del módulo clínica (como en el script 3 del examen):
+Listar las tablas:
 
 ```powershell
 $DB = 'polleria-prodtest-postgres-1'
 @'
-SELECT table_name FROM information_schema.tables WHERE table_schema = 'exa_clinica' ORDER BY 1;
+SELECT table_name FROM information_schema.tables WHERE table_schema = 'polleria' ORDER BY 1;
 '@ | docker exec -i $DB psql -U polleria -d polleria
 ```
 
@@ -142,16 +138,3 @@ Abrir una consola SQL:
 ```powershell
 docker exec -it polleria-prodtest-postgres-1 psql -U polleria -d polleria
 ```
-
-## Módulo clínica
-
-En el portal interno, como **ADMINISTRADOR**, sección **Clínica** del menú:
-
-| Pantalla | Ruta |
-|---|---|
-| Clínicas (listar, crear, editar, eliminar) | `/interno/clinica/clinicas` |
-| Especialidades (precargadas) | `/interno/clinica/especialidades` |
-| Consultorios con sus especialidades | `/interno/clinica/consultorios` |
-
-La guía que explica cómo está construido, archivo por archivo, está en
-`docs\GUIA-MODULO-CLINICA.md`.
