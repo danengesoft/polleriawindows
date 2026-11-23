@@ -108,7 +108,7 @@ if ($estado -ne 'healthy') { Fallar "PostgreSQL no quedó listo (estado: $estado
 Ok 'PostgreSQL está listo.'
 
 # 6. Tablas -------------------------------------------------------------------
-Paso '6/7 Tablas de la base de datos (pollería y clínica)'
+Paso '6/7 Tablas de la base de datos'
 docker exec $pg rm -rf /tmp/polleria-db
 docker exec $pg mkdir -p /tmp/polleria-db
 docker cp (Join-Path $Raiz 'polleria-backend\scripts') "${pg}:/tmp/polleria-db/"

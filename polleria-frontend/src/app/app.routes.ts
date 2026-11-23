@@ -28,15 +28,6 @@ export const routes: Routes = [
       {path:'caja',canActivate:[rolGuard('CAJERO','ADMINISTRADOR')],loadComponent:()=>import('./features/operacion/paneles').then(m=>m.Caja)},
       {path:'operaciones',canActivate:[rolGuard('OPERACIONES','ADMINISTRADOR')],loadComponent:()=>import('./features/operacion/paneles').then(m=>m.Operaciones)},
       {path:'mesero',canActivate:[rolGuard('MESERO','ADMINISTRADOR')],loadComponent:()=>import('./features/operacion/paneles').then(m=>m.Mesero)},
-      // Módulo clínica (examen final práctico v7): solo ADMINISTRADOR.
-      {path:'clinica',redirectTo:'clinica/clinicas',pathMatch:'full'},
-      {path:'clinica/clinicas',canActivate:[rolGuard('ADMINISTRADOR')],title:'Clínicas | Pollería Neyos',loadComponent:()=>import('./features/clinica/clinica-list').then(m=>m.ClinicaList)},
-      {path:'clinica/clinicas/nuevo',canActivate:[rolGuard('ADMINISTRADOR')],title:'Nueva clínica | Pollería Neyos',loadComponent:()=>import('./features/clinica/clinica-form').then(m=>m.ClinicaForm)},
-      {path:'clinica/clinicas/:id/editar',canActivate:[rolGuard('ADMINISTRADOR')],title:'Editar clínica | Pollería Neyos',loadComponent:()=>import('./features/clinica/clinica-form').then(m=>m.ClinicaForm)},
-      {path:'clinica/especialidades',canActivate:[rolGuard('ADMINISTRADOR')],title:'Especialidades | Pollería Neyos',loadComponent:()=>import('./features/clinica/especialidad-list').then(m=>m.EspecialidadList)},
-      {path:'clinica/consultorios',canActivate:[rolGuard('ADMINISTRADOR')],title:'Consultorios | Pollería Neyos',loadComponent:()=>import('./features/clinica/consultorio-list').then(m=>m.ConsultorioList)},
-      {path:'clinica/consultorios/nuevo',canActivate:[rolGuard('ADMINISTRADOR')],title:'Nuevo consultorio | Pollería Neyos',loadComponent:()=>import('./features/clinica/consultorio-form').then(m=>m.ConsultorioForm)},
-      {path:'clinica/consultorios/:id',canActivate:[rolGuard('ADMINISTRADOR')],title:'Consultorio | Pollería Neyos',loadComponent:()=>import('./features/clinica/consultorio-detalle').then(m=>m.ConsultorioDetalle)},
       {
         path: 'reportes',
         canActivate: [rolGuard('ADMINISTRADOR')],
