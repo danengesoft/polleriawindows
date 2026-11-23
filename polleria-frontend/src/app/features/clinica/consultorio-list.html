@@ -1,0 +1,47 @@
+<div class="page-heading">
+  <h1>Consultorios</h1>
+  <a matButton="filled" routerLink="/interno/clinica/consultorios/nuevo">+ Nuevo consultorio</a>
+</div>
+
+@if (aviso()) {
+  <p role="status" class="notice">{{ aviso() }}</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+}
+@if (loading()) {
+  <p role="status">Cargando consultorios…</p>
+}
+
+<div class="table-region" [attr.aria-busy]="loading()">
+  <table class="data-table">
+    <caption class="sr-only">Listado de consultorios</caption>
+    <thead>
+      <tr>
+        <th scope="col">Código</th>
+        <th scope="col">Clínica</th>
+        <th scope="col">Tarifa</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of datos(); track item.id) {
+        <tr>
+          <td data-label="Código">{{ item.codigo }}</td>
+          <td data-label="Clínica">{{ item.clinicaRazonSocial }}</td>
+          <td data-label="Tarifa">{{ item.tarifaHora | number: '1.2-2' }}</td>
+          <td data-label="Estado">{{ item.estado }}</td>
+          <td data-label="Acciones" class="row-actions">
+            <a matButton [routerLink]="['/interno/clinica/consultorios', item.id]">Ver</a>
+            <button matButton class="danger" type="button" (click)="eliminar(item)">Eliminar</button>
+          </td>
+        </tr>
+      } @empty {
+        @if (!loading() && !error()) {
+          <tr><td class="empty" colspan="5">No hay consultorios registrados.</td></tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

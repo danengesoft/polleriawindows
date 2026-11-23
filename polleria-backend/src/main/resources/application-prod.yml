@@ -10,10 +10,10 @@ spring:
       include-stacktrace: never
       include-binding-errors: never
   datasource:
-    url: ${ORACLE_JDBC_URL}
-    username: ${ORACLE_APP_USER}
-    password: ${ORACLE_APP_PASSWORD}
-    driver-class-name: oracle.jdbc.OracleDriver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   security:
     oauth2:
       resourceserver:

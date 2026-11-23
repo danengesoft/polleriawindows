@@ -5,24 +5,23 @@ x-logging: &bounded-logs
     max-size: "10m"
     max-file: "3"
 services:
-  oracle:
-    image: gvenzl/oracle-free:23-slim@sha256:6d61d267a3b978c24c5ac1790e62e927416a0aec446bd86e4b3a1527562757bd
+  postgres:
+    image: postgres:17-alpine@sha256:eee6c6e1b0894fa4fe0075eb054af9fd1cf39a35321c2d4110626cfe506411fb
     restart: unless-stopped
     logging: *bounded-logs
     environment:
-      ORACLE_PASSWORD: ${ORACLE_PASSWORD:?Set ORACLE_PASSWORD}
-      APP_USER: ${ORACLE_APP_USER:?Set ORACLE_APP_USER}
-      APP_USER_PASSWORD: ${ORACLE_APP_PASSWORD:?Set ORACLE_APP_PASSWORD}
+      POSTGRES_DB: polleria
+      POSTGRES_USER: polleria
+      POSTGRES_PASSWORD: ${POLLERIA_DB_PASSWORD:?Set POLLERIA_DB_PASSWORD}
       TZ: America/Lima
     volumes:
-      - oracle-data:/opt/oracle/oradata
+      - postgres-data:/var/lib/postgresql/data
     networks: [internal]
     healthcheck:
-      test: [CMD, healthcheck.sh]
-      interval: 10s
+      test: [CMD-SHELL, "pg_isready -U polleria -d polleria"]
+      interval: 5s
       timeout: 5s
-      retries: 60
-      start_period: 90s
+      retries: 24
   keycloak-db:
     image: postgres:17-alpine@sha256:eee6c6e1b0894fa4fe0075eb054af9fd1cf39a35321c2d4110626cfe506411fb
     restart: unless-stopped
@@ -81,15 +80,15 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       POLLERIA_IMAGENES_DIR: /app/imagenes-productos
-      ORACLE_JDBC_URL: jdbc:oracle:thin:@oracle:1521/FREEPDB1
-      ORACLE_APP_USER: ${ORACLE_APP_USER:?Set ORACLE_APP_USER}
-      ORACLE_APP_PASSWORD: ${ORACLE_APP_PASSWORD:?Set ORACLE_APP_PASSWORD}
+      DB_URL: jdbc:postgresql://postgres:5432/polleria
+      DB_USER: polleria
+      DB_PASSWORD: ${POLLERIA_DB_PASSWORD:?Set POLLERIA_DB_PASSWORD}
       PUBLIC_APP_URL: ${PUBLIC_APP_URL:?Set PUBLIC_APP_URL}
       KEYCLOAK_ISSUER_URI: ${PUBLIC_APP_URL:?Set PUBLIC_APP_URL}/auth/realms/polleria
       KEYCLOAK_JWK_SET_URI: http://keycloak:8080/auth/realms/polleria/protocol/openid-connect/certs
       TZ: America/Lima
     depends_on:
-      oracle:
+      postgres:
         condition: service_healthy
       keycloak:
         condition: service_healthy
@@ -130,7 +129,7 @@ services:
       retries: 6
 volumes:
   imagenes-productos:
-  oracle-data:
+  postgres-data:
   keycloak-data:
 networks:
   internal:

@@ -1,0 +1,36 @@
+<h1>{{ id() === null ? 'Nueva clínica' : 'Editar clínica' }}</h1>
+@if (loading()) {
+  <p role="status">Cargando clínica…</p>
+}
+@if (error()) {
+  <p role="alert" class="error">{{ error() }}</p>
+}
+
+<form [formGroup]="form" (ngSubmit)="guardar()" class="resource-form" novalidate>
+  <mat-form-field appearance="outline">
+    <mat-label>RUC</mat-label>
+    <input matInput formControlName="ruc" inputmode="numeric" maxlength="11" />
+    <mat-error>× {{ mensaje('ruc') }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Razón social</mat-label>
+    <input matInput formControlName="razonSocial" maxlength="150" />
+    <mat-error>× {{ mensaje('razonSocial') }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Teléfono</mat-label>
+    <input matInput formControlName="telefono" maxlength="20" />
+    <mat-error>× {{ mensaje('telefono') }}</mat-error>
+  </mat-form-field>
+
+  <mat-checkbox formControlName="activo">Activa</mat-checkbox>
+
+  <div class="form-actions">
+    <a matButton routerLink="/interno/clinica/clinicas">Cancelar</a>
+    <button matButton="filled" type="submit" [disabled]="guardando() || loading()">
+      {{ guardando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </div>
+</form>

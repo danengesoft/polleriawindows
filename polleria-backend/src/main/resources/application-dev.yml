@@ -8,10 +8,10 @@ spring:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:38080/realms/polleria}
   datasource:
-    url: jdbc:oracle:thin:@localhost:1522/FREEPDB1
-    username: POLLERIA
-    password: ${ORACLE_APP_PASSWORD}
-    driver-class-name: oracle.jdbc.OracleDriver
+    url: ${DB_URL:jdbc:postgresql://localhost:35433/polleria}
+    username: ${DB_USER:polleria}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
