@@ -4,7 +4,8 @@ COPY .mvn .mvn
 COPY mvnw pom.xml ./
 RUN chmod +x mvnw
 COPY src src
-RUN ./mvnw -B -DskipTests package
+# Caché de Maven entre compilaciones: Maven y las librerías se descargan solo la primera vez.
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -B -DskipTests package
 
 FROM eclipse-temurin:21-jre-jammy@sha256:affcab5356e1270ac35d2361ee83135af2f03e8d580eca78a6d5d6fdbf048db0
 RUN groupadd --system polleria && useradd --system --gid polleria --home-dir /app polleria \
